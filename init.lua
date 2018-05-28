@@ -1,142 +1,106 @@
+-----------------------
+-- HS initialization --
+-----------------------
+
+-- Load constants
+consts = require "configConsts"
+
+-- Load spoons
+hs.loadSpoon("SpoonInstall")
+spoon.SpoonInstall:andUse("KSheet")
+spoon.SpoonInstall:andUse("SpeedMenu")
+spoon.SpoonInstall:andUse("URLDispatcher")
+
+-- Reload HS on changes in config dir
+hs.pathwatcher.new(hs.configdir, hs.reload):start()
+
+---------------------------
+-- URL Dispatcher config --
+---------------------------
+-- http://www.hammerspoon.org/Spoons/URLDispatcher.html
+spoon.URLDispatcher.url_patterns = consts.urlPatterns
+spoon.URLDispatcher:start()
+
 ------------------
 -- VPN and WiFi --
 ------------------
-trustedNetworks = {"MIRICFAR UniFi", "Gerlo"}
-hotspots = {"Malo’s iPhone", "Malo’s iPad"}
-highBandwidthApps = {"Arq", "Arq Agent", "Google Drive File Stream"}
-
 function wifiChange(watcher, message, interface)
   if message == "SSIDChange" then
-    local network = hs.wifi.currentNetwork(interface)
+    local ssid = hs.wifi.currentNetwork(interface)
 
     -- Connect/disconnect from VPN
-    if not network or hs.fnutils.contains(hs.fnutils.concat(trustedNetworks, hotspots), network) then
+    if hs.fnutils.contains(hs.fnutils.concat(consts.trustedNetworks, consts.hotspots), ssid) then
       hs.application.get("ProtonVPN"):kill()
     else
       hs.application.open("ProtonVPN")
     end
 
     -- Hotspot specifc
-    if hs.fnutils.contains(hotspots, network) then
-      hs.fnutils.ieach(highBandwidthApps, function(x) hs.application.get(x):kill() end)
+    if hs.fnutils.contains(consts.hotspots, ssid) then
+      hs.fnutils.ieach(
+        consts.highBandwidthApps,
+        function(x)
+          hs.application.get(x):kill()
+        end
+      )
     else
-      hs.fnutils.ieach(highBandwidthApps, function(x) hs.application.open(x) end)
+      hs.fnutils.ieach(
+        consts.highBandwidthApps,
+        function(x)
+          hs.application.open(x)
+        end
+      )
     end
   end
 end
 
-local wifiWatcher = hs.wifi.watcher.new(wifiChange):start()
+hs.wifi.watcher.new(wifiChange):start()
 
--------------------
--- Screen change --
--------------------
-function screenChange()
-  local screens = hs.screen.allScreens()
-
-  local modsPressed = hs.eventtap.checkKeyboardModifiers()
+-----------------
+-- TTS Podcast --
+-----------------
+function ttsPodcast()
+  hs.notify.show("TTS Podcast", "Adding new article")
+  local data = {["url"] = hs.pasteboard.readString()}
+  hs.http.asyncPost(
+    consts.ttsPodcastUrl,
+    hs.json.encode(data, true),
+    {["Content-Type"] = "application/json"},
+    function(code, response, headers)
+      if code == 200 then
+        hs.notify("TTS Podcast", "Article added successfully!")
+      else
+        hs.notify("TTS Podcast", "Error adding article!")
+      end
+      print(response)
+    end
+  )
 end
 
--- local screenWatcher = hs.screen.watcher.new(screenChange):start()
+hs.hotkey.bind({"cmd", "shift"}, hs.keycodes.map["escape"], ttsPodcast)
 
---------------------
--- Text-to-speech --
---------------------
-function copySelected()
-  hs.eventtap.event.newKeyEvent({"cmd"}, "c", true):post()
-  hs.eventtap.event.newKeyEvent({"cmd"}, "c", false):post()
-end
+---------------
+-- macOS TTS --
+---------------
+ttsSynth = hs.speech.new(consts.osTtsVoice)
+ttsSynth:rate(consts.osTtsRate)
 
-function getGcpAuthToken()
-  local authToken = ""
-  hs.task.new("/usr/local/bin/gcloud", function(_, stdOut, _) authToken = stdOut end, {"auth", "application-default", "print-access-token"}):start():waitUntilExit()
-  return string.gsub(authToken, "\n", "")
-end
-
-function cleanText(text)
-  text = string.gsub(text, "‘", "'")
-  text = string.gsub(text, "’", "'")
-  text = string.gsub(text, "“", '"')
-  text = string.gsub(text, "”", '"')
-  text = string.gsub(text, " — ", ", ")
-  text = string.gsub(text, "—", ", ")
-  text = string.gsub(text, "–", ", ")
-  text = string.gsub(text, "\n", ", ")
-  return text
-end
-
-function generateSpeechAudio(text)
-  -- Setup http request variables
-  local url = "https://texttospeech.googleapis.com/v1beta1/text:synthesize"
-
-  local data = {
-    ["input"] = {
-      ["text"] = text
-    },
-    ["voice"] = {
-      ["languageCode"] = "en-US",
-      ["name"] = "en-US-Wavenet-C",
-      ["ssmlGender"] = "FEMALE"
-    },
-    ["audioConfig"] = {
-      ["audioEncoding"] = "MP3",
-      ["speakingRate"] = 1
-    }
-  }
-
-  local headers = {
-    ["Authorization"] = "Bearer " .. getGcpAuthToken(),
-    ["Content-Type"] = "application/json; charset=utf-8"
-  }
-
-  -- Execute request
-  local code, response, _ = hs.http.post(url, hs.json.encode(data, true), headers)
-  if code == 200 then print("GCP request successful") else print(response) end
-
-  -- Extract and return mp3 data
-  return hs.base64.decode(hs.json.decode(response)["audioContent"])
-end
-
-function writeMp3Files(mp3Data)
-  local mp3FilePath = "/tmp/" .. hs.hash.MD5(mp3Data) .. ".mp3"
-  local mp3File = io.open(mp3FilePath, "w+")
-
-  mp3File:write(mp3Data)
-  mp3File:close()
-  return mp3FilePath
-end
-
-function textToSpeech()
-  -- Copy selected text and retrive from pasteboard
-  print("Getting text")
-  -- copySelected()
-  local textToSpeak = cleanText(hs.pasteboard.readString())
-
-  -- Divide up text to deal with GCP char limit
-  local gcpCharLimit = 5000
-  print("Dividing text up into " .. textToSpeak:len()//gcpCharLimit + 1 .. " sections")
-  local textSections = {}
-  for i = 1, textToSpeak:len(), gcpCharLimit do
-    table.insert(textSections, textToSpeak:sub(i, i + gcpCharLimit -1))
+function pauseOrContinueTTS()
+  if ttsSynth:isPaused() then
+    ttsSynth:continue()
+  else
+    ttsSynth:pause()
   end
-
-  -- Generate mp3 data from text and write to file
-  print("Retreiving mp3 data from GCP")
-  local mp3Data = hs.fnutils.imap(textSections, generateSpeechAudio)
-  print("mp3 data retrieved")
-
-  print("Writing files to disk")
-  local mp3FilePaths = hs.fnutils.imap(mp3Data, writeMp3Files)
-
-  -- Play file in VLC
-  print("Opening files in VLC")
-  mp3FilePaths = hs.fnutils.imap(mp3FilePaths, function(x) return "file://" .. x end)
-  hs.task.new("/usr/local/bin/vlc", nil, hs.fnutils.concat({"--rate=2.0"}, mp3FilePaths)):start()
 end
 
--- Hotkey for text-to-speech
-local textToSpeechHk = hs.hotkey.bind({"cmd", "shift"}, hs.keycodes.map["escape"], textToSpeech, nil, nil)
+function speakSelectedText()
+  if ttsSynth:isSpeaking() then
+    ttsSynth:stop()
+  else
+    hs.eventtap.keyStroke({"cmd"}, "c")
+    ttsSynth:speak(hs.pasteboard.readString())
+  end
+end
 
-----------
--- Misc --
-----------
-local hsConfigWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.config/hammerspoon/", hs.reload):start()
+hs.hotkey.bind({"option"}, hs.keycodes.map["escape"], speakSelectedText)
+hs.hotkey.bind({"option", "shift"}, hs.keycodes.map["escape"], pauseOrContinueTTS)
