@@ -108,6 +108,11 @@ spoon.SpoonInstall:andUse(
           fn = function()
             hs.eventtap.keyStroke({"cmd", "ctrl"}, "q")
           end
+        },
+        ["Toggle Tethering"] = {
+          fn = function()
+            toggleTethering()
+          end
         }
       }
       x:refreshAllCommands()
@@ -119,15 +124,42 @@ spoon.SpoonInstall:andUse(
 ------------------
 -- VPN and WiFi --
 ------------------
+function toggleTethering()
+  local wifiMenuItem = consts.hotspots[1]
+  local delay = 5
+
+  if hs.wifi.currentNetwork() == consts.hotspots[1] then
+    wifiMenuItem = "Disconnect from " .. wifiMenuItem
+    delay = 0
+  end
+
+  hs.osascript.applescript(
+    string.format(
+      [[
+      tell application "System Events" to tell process "SystemUIServer"
+  	    set wifi to (first menu bar item whose description contains "Wi-Fi") of menu bar 1
+        click wifi
+        delay %i
+        click (first menu item whose title contains "%s") of menu of wifi
+      end tell
+      ]],
+      delay,
+      wifiMenuItem
+    )
+  )
+end
+
 function wifiChange(watcher, message, interface)
-  if message == "SSIDChange" then
-    local ssid = hs.wifi.currentNetwork(interface)
+  local ssid = hs.wifi.currentNetwork(interface)
+
+  if ssid and message == "SSIDChange" then
     hs.notify.show("WiFi", "", "Connected to " .. ssid)
 
     -- Connect/disconnect from VPN
-    if not ssid or hs.fnutils.contains(hs.fnutils.concat(consts.trustedNetworks, consts.hotspots), ssid) then
-      if hs.application.get(consts.vpnApp) then
-        hs.application.get(consts.vpnApp):kill()
+    if hs.fnutils.contains(hs.fnutils.concat(consts.trustedNetworks, consts.hotspots), ssid) then
+      local vpnApp = hs.application.get(consts.vpnApp)
+      if vpnApp then
+        vpnApp:kill9()
       end
     else
       hs.application.open(consts.vpnApp)
@@ -138,7 +170,10 @@ function wifiChange(watcher, message, interface)
       hs.fnutils.ieach(
         consts.highBandwidthApps,
         function(x)
-          hs.application.get(x):kill()
+          app = hs.application.get(x)
+          if app then
+            app:kill()
+          end
         end
       )
     else
@@ -240,3 +275,5 @@ function changeAudioDevice(deviceName)
     hs.notify.show("Audio Device", "", "Failed to conncet to " .. deviceName)
   end
 end
+
+hs.notify.show("Hammerspoon", "", "Configuration (re)loaded")
