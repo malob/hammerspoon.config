@@ -2,25 +2,36 @@
 -- HS initialization --
 -----------------------
 
--- Load configuration constants
+-- Load configuration constants used throughout the code
 consts = require "configConsts"
 
--- Reload HS on changes in config dir
+-- Reload Hammerspoon on changes in config dir
 hs.pathwatcher.new(hs.configdir, hs.reload):start()
 
--- Spoon initialization
+-- Misc
+hyper = {"ctrl", "alt", "cmd"}
+hs.window.animationDuration = 0.1
+hs.doc.hsdocs.forceExternalBrowser(true)
+
+------------------
+-- Spoons setup --
+------------------
+
+-- SpoonInstall, to manage installation and setup of all other spoons
 -- http://www.hammerspoon.org/Spoons/SpoonInstall.html
 hs.loadSpoon("SpoonInstall")
 
+-- KSheet, keyboard shotcuts popup window (not currently using)
 -- http://www.hammerspoon.org/Spoons/KSheet.html
 spoon.SpoonInstall:andUse("KSheet")
 
+-- SpeedMenu, shows upload and download rates in menubar
 -- http://www.hammerspoon.org/Spoons/SpeedMenu.html
 spoon.SpoonInstall:andUse("SpeedMenu")
 
+-- Miro Windows Manager, easy window movement
 -- https://github.com/miromannino/miro-windows-manager
 -- http://www.hammerspoon.org/Spoons/MiroWindowsManager.html
-hyper = {"ctrl", "alt", "cmd"}
 spoon.SpoonInstall:andUse(
   "MiroWindowsManager",
   {
@@ -33,8 +44,8 @@ spoon.SpoonInstall:andUse(
     }
   }
 )
-hs.window.animationDuration = 0.1
 
+-- URLDispatcher, for routing URLs do different apps based on patterns
 -- http://www.hammerspoon.org/Spoons/URLDispatcher.html
 spoon.SpoonInstall:andUse(
   "URLDispatcher",
@@ -44,6 +55,7 @@ spoon.SpoonInstall:andUse(
   }
 )
 
+-- Seal, a powerful launch bar
 -- http://www.hammerspoon.org/Spoons/Seal.html
 spoon.SpoonInstall:andUse(
   "Seal",
@@ -74,38 +86,36 @@ spoon.SpoonInstall:andUse(
             hs.notify.show("Audio Device", "", "Built-in connected")
           end
         },
-        -- TTS commands
+        -- Text-to-speach commands
         ["Pause/Play TTS"] = {
           fn = function()
             pauseOrContinueTts()
           end
         },
-        ["Speak Text"] = {
+        ["Speak text"] = {
           fn = function(x)
             speakText(x)
           end,
           keyword = "speak"
         },
-        ["Add article to podcast"] = {
+        ["Add article to TTS podcast"] = {
           fn = function(x)
             ttsPodcast(x)
           end,
           keyword = "ttspod"
         },
         -- Asana
-        ["New Asana Task in MIRI"] = {
-          url = "https://asana.com",
+        ["New Asana task in " .. consts.asanaWorkWorkspaceName] = {
           fn = function(x)
-            newAsanaTask(x, asanaWorkspaceIds["MIRI"])
+            newAsanaTask(x, consts.asanaWorkWorkspaceName)
           end,
-          keyword = "amiri"
+          keyword = "awork"
         },
-        ["New Asana Task in Gerlo"] = {
-          url = "https://asana.com",
+        ["New Asana task in " .. consts.asanaPersonalWorkspaceName] = {
           fn = function(x)
-            newAsanaTask(x, asanaWorkspaceIds["Gerlo"])
+            newAsanaTask(x, consts.asanaPersonalWorkspaceName)
           end,
-          keyword = "agerlo"
+          keyword = "ahome"
         },
         -- System commands
         ["Restart/Reboot"] = {
@@ -123,10 +133,16 @@ spoon.SpoonInstall:andUse(
             hs.eventtap.keyStroke({"cmd", "ctrl"}, "q")
           end
         },
-        ["Toggle Tethering"] = {
+        ["Toggle tethering"] = {
           fn = function()
             toggleTethering()
           end
+        },
+        ["Hammerspoon Docs"] = {
+          fn = function(x)
+            hs.doc.hsdocs.help(x)
+          end,
+          keyword = "hsdocs"
         }
       }
       x:refreshAllCommands()
@@ -138,9 +154,12 @@ spoon.SpoonInstall:andUse(
 ------------------
 -- VPN and WiFi --
 ------------------
+
+-- Toggle tethering for devices connected to iCloud account
+-- Uses Applescript to manipulate the Wi-Fi menu item
 function toggleTethering()
   local wifiMenuItem = consts.hotspots[1]
-  local delay = 5
+  local delay = 5 -- tethering options often don't appear in menu right away
 
   if hs.wifi.currentNetwork() == consts.hotspots[1] then
     wifiMenuItem = "Disconnect from " .. wifiMenuItem
@@ -163,6 +182,9 @@ function toggleTethering()
   )
 end
 
+-- Watches for SSID change
+-- If network isn't trusted loads VPN application
+-- If network is a hotspot kills high-bandwidth apps
 function wifiChange(watcher, message, interface)
   local ssid = hs.wifi.currentNetwork(interface)
 
@@ -203,11 +225,13 @@ end
 
 hs.wifi.watcher.new(wifiChange):start()
 
----------
--- TTS --
----------
+----------------------------
+-- Text-to-speech podcast --
+----------------------------
 
--- Podcast
+-- Submits a url to an article to text-to-speach podcast generator
+-- If url is nil as an argument then uses whatever text is currently selected
+-- See https://github.com/malob/article-to-audio-cloud-function for info on the rest of the service
 function ttsPodcast(url)
   if not url then
     hs.eventtap.keyStroke({"cmd"}, "c")
@@ -233,7 +257,9 @@ end
 
 hs.hotkey.bind({"cmd", "shift"}, hs.keycodes.map["escape"], ttsPodcast)
 
--- macOS TTS
+--------------------------
+-- macOS text-to-speech --
+--------------------------
 ttsSynth = hs.speech.new(consts.osTtsVoice)
 ttsSynth:rate(consts.osTtsRate)
 
@@ -245,6 +271,8 @@ function pauseOrContinueTts()
   end
 end
 
+-- Speaks text using macOS text-to-speech
+-- If textToSpeak is nil currently selected text is used
 function speakText(textToSpeak)
   if not textToSpeak then
     hs.eventtap.keyStroke({"cmd"}, "c")
@@ -263,6 +291,10 @@ hs.hotkey.bind({"option", "shift"}, "escape", pauseOrContinueTts)
 ----------------------------
 -- Audio device functions --
 ----------------------------
+
+-- Switches audio input/output device
+-- For some Bluetooth devices like AirPods they don't show up in list of available devices
+-- For these devices, if not found in device list, Applescript is used to manipulate Volume menu item to connect them
 function changeAudioDevice(deviceName)
   if hs.audiodevice.findDeviceByName(deviceName) then
     hs.audiodevice.findInputByName(deviceName):setDefaultInputDevice()
@@ -274,7 +306,7 @@ function changeAudioDevice(deviceName)
         tell application "System Events" to tell process "SystemUIServer"
 	        set vol to (first menu bar item whose description contains "Volume") of menu bar 1
           click vol
-          delay 2
+          delay 3
           click (first menu item whose title is "%s") of menu of vol
         end tell
         ]],
@@ -293,39 +325,49 @@ end
 -----------
 -- Asana --
 -----------
-asanaBaseUrl = "https://app.asana.com/api/1.0"
-asanaHeader = {["Authorization"] = "Bearer " .. consts.asanaApiKey}
-asanaUserId = nil
-asanaWorkspaceIds = {}
 
-hs.http.asyncGet(
-  asanaBaseUrl .. "/users/me",
-  asanaHeader,
-  function(code, res, headers)
-    res = hs.json.decode(res)
-    asanaUserId = res.data.id
-    hs.fnutils.each(
-      res.data.workspaces,
-      function(x)
-        asanaWorkspaceIds[x.name] = x.id
-      end
-    )
+-- Setup core constants
+asana = {}
+asana.baseUrl = "https://app.asana.com/api/1.0"
+asana.reqHeader = {["Authorization"] = "Bearer " .. consts.asanaApiKey}
+asana.userId = nil
+asana.workspaceIds = {}
+
+-- Get Asana userId and workspaceIds
+function getAsanaIds()
+  local code, res, headers = hs.http.get(asana.baseUrl .. "/users/me", asana.reqHeader)
+  res = hs.json.decode(res)
+  asana.userId = res.data.id
+  hs.fnutils.each(
+    res.data.workspaces,
+    function(x)
+      asana.workspaceIds[x.name] = x.id
+    end
+  )
+end
+
+-- Creates a new Asana task with a given name in a given workspace
+-- First time function is called it retrieves IDs
+function newAsanaTask(taskName, workspaceName)
+  if not asana.userId then
+    getAsanaIds()
   end
-)
-
-function newAsanaTask(taskName, workspace)
-  local url =
-    asanaBaseUrl .. "/tasks" .. "?assignee=" .. asanaUserId .. "&workspace=" .. workspace .. "&name=" .. taskName
   hs.http.asyncPost(
-    url,
-    "",
-    asanaHeader,
-    function(code, response, headers)
+    string.format(
+      "%s/tasks?assignee=%i&workspace=%i&name=%s",
+      asana.baseUrl,
+      asana.userId,
+      asana.workspaceIds[workspaceName],
+      hs.http.encodeForQuery(taskName)
+    ),
+    "", -- requires empty body
+    asana.reqHeader,
+    function(code, res, headers)
       if code == 201 then
-        hs.notify.show("Asana", "", "New task added")
+        hs.notify.show("Asana", "", "New task added to workspace: " .. workspaceName)
       else
         hs.notify.show("Asana", "", "Error adding task")
-        print(response)
+        print(res)
         hs.toggleConsole()
       end
     end
