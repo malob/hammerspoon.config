@@ -67,16 +67,19 @@ spoon.SpoonInstall:andUse(
         ["Connect Beats"] = {
           fn = function()
             changeAudioDevice("Malo’s Beats Studio³")
+            refocusAfterUserAction()
           end
         },
         ["Connect AirPods"] = {
           fn = function()
             changeAudioDevice("Malo’s AirPods")
+            refocusAfterUserAction()
           end
         },
         ["Connect LG Display"] = {
           fn = function()
             changeAudioDevice("LG UltraFine Display Audio")
+            refocusAfterUserAction()
           end
         },
         ["Connect Built-in"] = {
@@ -84,23 +87,27 @@ spoon.SpoonInstall:andUse(
             hs.audiodevice.findInputByName("Built-in Microphone"):setDefaultInputDevice()
             hs.audiodevice.findOutputByName("Built-in Output"):setDefaultOutputDevice()
             hs.notify.show("Audio Device", "", "Built-in connected")
+            refocusAfterUserAction()
           end
         },
         -- Text-to-speach commands
         ["Pause/Play TTS"] = {
           fn = function()
             pauseOrContinueTts()
+            refocusAfterUserAction()
           end
         },
         ["Speak text"] = {
           fn = function(x)
             speakText(x)
+            refocusAfterUserAction()
           end,
           keyword = "speak"
         },
         ["Add article to TTS podcast"] = {
           fn = function(x)
             ttsPodcast(x)
+            refocusAfterUserAction()
           end,
           keyword = "ttspod"
         },
@@ -108,12 +115,14 @@ spoon.SpoonInstall:andUse(
         ["New Asana task in " .. consts.asanaWorkWorkspaceName] = {
           fn = function(x)
             newAsanaTask(x, consts.asanaWorkWorkspaceName)
+            refocusAfterUserAction()
           end,
           keyword = "awork"
         },
         ["New Asana task in " .. consts.asanaPersonalWorkspaceName] = {
           fn = function(x)
             newAsanaTask(x, consts.asanaPersonalWorkspaceName)
+            refocusAfterUserAction()
           end,
           keyword = "ahome"
         },
@@ -136,6 +145,7 @@ spoon.SpoonInstall:andUse(
         ["Toggle tethering"] = {
           fn = function()
             toggleTethering()
+            refocusAfterUserAction()
           end
         },
         ["Hammerspoon Docs"] = {
@@ -393,6 +403,11 @@ function toggleSeal()
     spoon.Seal:toggle()
     sealVisible = true
   end
+end
+
+function refocusAfterUserAction()
+  sealVisible = false
+  windowBeforeSeal:focus()
 end
 
 hs.hotkey.bind("cmd", "space", toggleSeal)
