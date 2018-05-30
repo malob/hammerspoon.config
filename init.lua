@@ -48,7 +48,6 @@ spoon.SpoonInstall:andUse(
 spoon.SpoonInstall:andUse(
   "Seal",
   {
-    hotkeys = {toggle = {"cmd", "space", "useractions"}},
     fn = function(x)
       x:loadPlugins({"apps", "calc", "useractions"})
       x.plugins.useractions.actions = {
@@ -92,6 +91,21 @@ spoon.SpoonInstall:andUse(
             ttsPodcast(x)
           end,
           keyword = "ttspod"
+        },
+        -- Asana
+        ["New Asana Task in MIRI"] = {
+          url = "https://asana.com",
+          fn = function(x)
+            newAsanaTask(x, asanaWorkspaceIds["MIRI"])
+          end,
+          keyword = "amiri"
+        },
+        ["New Asana Task in Gerlo"] = {
+          url = "https://asana.com",
+          fn = function(x)
+            newAsanaTask(x, asanaWorkspaceIds["Gerlo"])
+          end,
+          keyword = "agerlo"
         },
         -- System commands
         ["Restart/Reboot"] = {
@@ -210,9 +224,9 @@ function ttsPodcast(url)
         hs.notify.show("TTS Podcast", "", "Article added successfully!")
       else
         hs.notify.show("TTS Podcast", "", "Error adding article!")
+        print(response)
         hs.toggleConsole()
       end
-      print(response)
     end
   )
 end
@@ -275,5 +289,70 @@ function changeAudioDevice(deviceName)
     hs.notify.show("Audio Device", "", "Failed to conncet to " .. deviceName)
   end
 end
+
+-----------
+-- Asana --
+-----------
+asanaBaseUrl = "https://app.asana.com/api/1.0"
+asanaHeader = {["Authorization"] = "Bearer " .. consts.asanaApiKey}
+asanaUserId = nil
+asanaWorkspaceIds = {}
+
+hs.http.asyncGet(
+  asanaBaseUrl .. "/users/me",
+  asanaHeader,
+  function(code, res, headers)
+    res = hs.json.decode(res)
+    asanaUserId = res.data.id
+    hs.fnutils.each(
+      res.data.workspaces,
+      function(x)
+        asanaWorkspaceIds[x.name] = x.id
+      end
+    )
+  end
+)
+
+function newAsanaTask(taskName, workspace)
+  local url =
+    asanaBaseUrl .. "/tasks" .. "?assignee=" .. asanaUserId .. "&workspace=" .. workspace .. "&name=" .. taskName
+  hs.http.asyncPost(
+    url,
+    "",
+    asanaHeader,
+    function(code, response, headers)
+      if code == 201 then
+        hs.notify.show("Asana", "", "New task added")
+      else
+        hs.notify.show("Asana", "", "Error adding task")
+        print(response)
+        hs.toggleConsole()
+      end
+    end
+  )
+end
+
+----------
+-- Seal --
+----------
+
+-- Get Seal to refocus last window when it closes
+sealVisible = false
+windowBeforeSeal = nil
+
+function toggleSeal()
+  if sealVisible then
+    spoon.Seal:toggle()
+    sealVisible = false
+    windowBeforeSeal:focus()
+    windowBeforeSeal = nil
+  else
+    windowBeforeSeal = hs.window.focusedWindow()
+    spoon.Seal:toggle()
+    sealVisible = true
+  end
+end
+
+hs.hotkey.bind("cmd", "space", toggleSeal)
 
 hs.notify.show("Hammerspoon", "", "Configuration (re)loaded")

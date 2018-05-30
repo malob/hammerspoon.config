@@ -11,5 +11,7 @@ return {
   -- TTS
   osTtsVoice = "samantha.premium",
   osTtsRate = 300, -- words per minute
-  ttsPodcastUrl = nil
+  ttsPodcastUrl = nil,
+  -- Asana
+  asanaApiKey = nil
 }
