@@ -6,7 +6,7 @@
 consts = require "configConsts"
 
 -- Reload Hammerspoon on changes in config dir
-hs.pathwatcher.new(hs.configdir, hs.reload):start()
+reloadConfWatcher = hs.pathwatcher.new(hs.configdir, hs.reload):start()
 
 -- Misc
 hyper = {"ctrl", "alt", "cmd"}
@@ -21,7 +21,7 @@ hs.doc.hsdocs.forceExternalBrowser(true)
 -- http://www.hammerspoon.org/Spoons/SpoonInstall.html
 hs.loadSpoon("SpoonInstall")
 
--- KSheet, keyboard shotcuts popup window (not currently using)
+-- KSheet, keyboard shortcuts popup window (not currently using)
 -- http://www.hammerspoon.org/Spoons/KSheet.html
 spoon.SpoonInstall:andUse("KSheet")
 
@@ -50,7 +50,10 @@ spoon.SpoonInstall:andUse(
 spoon.SpoonInstall:andUse(
   "URLDispatcher",
   {
-    config = {url_patterns = consts.urlPatterns},
+    config = {
+      default_handler = consts.defaultUrlHandler,
+      url_patterns = consts.urlPatterns
+    },
     start = true
   }
 )
@@ -90,7 +93,7 @@ spoon.SpoonInstall:andUse(
             refocusAfterUserAction()
           end
         },
-        -- Text-to-speach commands
+        -- Text-to-speech commands
         ["Pause/Play TTS"] = {
           fn = function()
             pauseOrContinueTts()
@@ -139,6 +142,7 @@ spoon.SpoonInstall:andUse(
         },
         ["Lock"] = {
           fn = function()
+            resetSealVisible()
             hs.eventtap.keyStroke({"cmd", "ctrl"}, "q")
           end
         },
@@ -151,8 +155,34 @@ spoon.SpoonInstall:andUse(
         ["Hammerspoon Docs"] = {
           fn = function(x)
             hs.doc.hsdocs.help(x)
+            resetSealVisible()
           end,
           keyword = "hsdocs"
+        },
+        ["Make a phone call"] = {
+          fn = function(x)
+            hs.urlevent.openURL("tel://" .. hs.http.encodeForQuery(x))
+            resetSealVisible()
+          end,
+          keyword = "call"
+        },
+        ["Search in Maps"] = {
+          fn = function(x)
+            hs.urlevent.openURLWithBundle("http://maps.apple.com/?q=" .. hs.http.encodeForQuery(x), "com.apple.Maps")
+            resetSealVisible()
+          end,
+          keyword = "map"
+        },
+        -- Hammerspoon
+        ["Reload Hammerspoon"] = {
+          fn = function()
+            hs.reload()
+          end
+        },
+        -- Web quieres
+        ["Search Duck Duck Go"] = {
+          url = "https://duckduckgo.com/?q=${query}",
+          keyword = "ddg"
         }
       }
       x:refreshAllCommands()
@@ -211,7 +241,7 @@ function wifiChange(watcher, message, interface)
       hs.application.open(consts.vpnApp)
     end
 
-    -- Hotspot specifc
+    -- Hotspot specific
     if hs.fnutils.contains(consts.hotspots, ssid) then
       hs.fnutils.ieach(
         consts.highBandwidthApps,
@@ -239,7 +269,7 @@ hs.wifi.watcher.new(wifiChange):start()
 -- Text-to-speech podcast --
 ----------------------------
 
--- Submits a url to an article to text-to-speach podcast generator
+-- Submits a url to an article to text-to-speech podcast generator
 -- If url is nil as an argument then uses whatever text is currently selected
 -- See https://github.com/malob/article-to-audio-cloud-function for info on the rest of the service
 function ttsPodcast(url)
@@ -272,6 +302,7 @@ hs.hotkey.bind({"cmd", "shift"}, hs.keycodes.map["escape"], ttsPodcast)
 --------------------------
 ttsSynth = hs.speech.new(consts.osTtsVoice)
 ttsSynth:rate(consts.osTtsRate)
+itunesWasPlaying = false
 
 function pauseOrContinueTts()
   if ttsSynth:isPaused() then
@@ -290,7 +321,15 @@ function speakText(textToSpeak)
   end
   if ttsSynth:isSpeaking() then
     ttsSynth:stop()
+    if iTunesWasPlaying then
+      hs.itunes.play()
+      itunesWasPlaying = false
+    end
   else
+    if hs.itunes.isPlaying() then
+      hs.itunes.pause()
+      iTunesWasPlaying = true
+    end
     ttsSynth:speak(textToSpeak)
   end
 end
@@ -402,12 +441,18 @@ function toggleSeal()
     windowBeforeSeal = hs.window.focusedWindow()
     spoon.Seal:toggle()
     sealVisible = true
+    hs.timer.doAfter(10, resetSealVisible)
   end
 end
 
-function refocusAfterUserAction()
+function resetSealVisible()
   sealVisible = false
+  windowBeforeSeal = nil
+end
+
+function refocusAfterUserAction()
   windowBeforeSeal:focus()
+  resetSealVisible()
 end
 
 hs.hotkey.bind("cmd", "space", toggleSeal)

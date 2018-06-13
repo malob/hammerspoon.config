@@ -11,6 +11,7 @@ return {
   -- VPN client name, for best results should be set to auto-connect on launch
   vpnApp = "ProtonVPN",
   -- Patterns for use with URLDispatcher http://www.hammerspoon.org/Spoons/URLDispatcher.html
+  defautUrlHandler = "com.apple.SafariTechnologyPreview",
   urlPatterns = {
     {"https?://meet.google.com", "com.google.Chrome"}
   },
