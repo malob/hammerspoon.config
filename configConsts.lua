@@ -11,7 +11,7 @@ return {
   -- VPN client name, for best results should be set to auto-connect on launch
   vpnApp = "ProtonVPN",
   -- Patterns for use with URLDispatcher http://www.hammerspoon.org/Spoons/URLDispatcher.html
-  defautUrlHandler = "com.apple.SafariTechnologyPreview",
+  defaultUrlHandler = "com.apple.Safari",
   urlPatterns = {
     {"https?://meet.google.com", "com.google.Chrome"}
   },
@@ -23,13 +23,13 @@ return {
   osTtsRate = 300, -- words per minute
   -- URL to cloud function to add new article to personal text-to-speech podcast
   -- https://github.com/malob/article-to-audio-cloud-function
-  ttsPodcastUrl = nil,
+  ttsPodcastUrl = "",
   -----------
   -- Asana --
   -----------
   -- Asana API key
   -- Generated in My Profile Settings -> Apps -> Manage Developer Apps -> Create New Personal Access Token
-  asanaApiKey = nil,
+  asanaApiKey = "",
   -- Names for Asana workspaces used for work and personal
   asanaWorkWorkspaceName = "MIRI",
   asanaPersonalWorkspaceName = "Gerlo"

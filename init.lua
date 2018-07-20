@@ -20,14 +20,26 @@ hs.doc.hsdocs.forceExternalBrowser(true)
 -- SpoonInstall, to manage installation and setup of all other spoons
 -- http://www.hammerspoon.org/Spoons/SpoonInstall.html
 hs.loadSpoon("SpoonInstall")
+spoon.SpoonInstall.use_syncinstall = true
 
--- KSheet, keyboard shortcuts popup window (not currently using)
+-- KSheet, keyboard shortcuts popup window
 -- http://www.hammerspoon.org/Spoons/KSheet.html
 spoon.SpoonInstall:andUse("KSheet")
+local ksheetVisible = false
+function toggleKSheet()
+  if ksheetVisible then
+    spoon.KSheet:hide()
+    ksheetVisible = false
+  else
+    spoon.KSheet:show()
+    ksheetVisible = true
+  end
+end
+hs.hotkey.bind(hyper, "/", toggleKSheet)
 
 -- SpeedMenu, shows upload and download rates in menubar
 -- http://www.hammerspoon.org/Spoons/SpeedMenu.html
-spoon.SpoonInstall:andUse("SpeedMenu")
+-- spoon.SpoonInstall:andUse("SpeedMenu", {start = true})
 
 -- Miro Windows Manager, easy window movement
 -- https://github.com/miromannino/miro-windows-manager
@@ -76,13 +88,11 @@ spoon.SpoonInstall:andUse(
         ["Connect AirPods"] = {
           fn = function()
             changeAudioDevice("Malo’s AirPods")
-            refocusAfterUserAction()
           end
         },
         ["Connect LG Display"] = {
           fn = function()
             changeAudioDevice("LG UltraFine Display Audio")
-            refocusAfterUserAction()
           end
         },
         ["Connect Built-in"] = {
@@ -90,27 +100,23 @@ spoon.SpoonInstall:andUse(
             hs.audiodevice.findInputByName("Built-in Microphone"):setDefaultInputDevice()
             hs.audiodevice.findOutputByName("Built-in Output"):setDefaultOutputDevice()
             hs.notify.show("Audio Device", "", "Built-in connected")
-            refocusAfterUserAction()
           end
         },
         -- Text-to-speech commands
         ["Pause/Play TTS"] = {
           fn = function()
             pauseOrContinueTts()
-            refocusAfterUserAction()
           end
         },
         ["Speak text"] = {
           fn = function(x)
             speakText(x)
-            refocusAfterUserAction()
           end,
           keyword = "speak"
         },
         ["Add article to TTS podcast"] = {
           fn = function(x)
             ttsPodcast(x)
-            refocusAfterUserAction()
           end,
           keyword = "ttspod"
         },
@@ -118,14 +124,12 @@ spoon.SpoonInstall:andUse(
         ["New Asana task in " .. consts.asanaWorkWorkspaceName] = {
           fn = function(x)
             newAsanaTask(x, consts.asanaWorkWorkspaceName)
-            refocusAfterUserAction()
           end,
           keyword = "awork"
         },
         ["New Asana task in " .. consts.asanaPersonalWorkspaceName] = {
           fn = function(x)
             newAsanaTask(x, consts.asanaPersonalWorkspaceName)
-            refocusAfterUserAction()
           end,
           keyword = "ahome"
         },
@@ -142,41 +146,46 @@ spoon.SpoonInstall:andUse(
         },
         ["Lock"] = {
           fn = function()
-            resetSealVisible()
             hs.eventtap.keyStroke({"cmd", "ctrl"}, "q")
           end
         },
         ["Toggle tethering"] = {
           fn = function()
             toggleTethering()
-            refocusAfterUserAction()
           end
         },
-        ["Hammerspoon Docs"] = {
-          fn = function(x)
-            hs.doc.hsdocs.help(x)
-            resetSealVisible()
-          end,
-          keyword = "hsdocs"
+        ["Toggle dark mode"] = {
+          fn = function()
+            toggleDarkMode()
+          end
         },
         ["Make a phone call"] = {
           fn = function(x)
             hs.urlevent.openURL("tel://" .. hs.http.encodeForQuery(x))
-            resetSealVisible()
           end,
           keyword = "call"
         },
         ["Search in Maps"] = {
           fn = function(x)
             hs.urlevent.openURLWithBundle("http://maps.apple.com/?q=" .. hs.http.encodeForQuery(x), "com.apple.Maps")
-            resetSealVisible()
           end,
           keyword = "map"
         },
         -- Hammerspoon
+        ["Hammerspoon Docs"] = {
+          fn = function(x)
+            hs.doc.hsdocs.help(x)
+          end,
+          keyword = "hsdocs"
+        },
         ["Reload Hammerspoon"] = {
           fn = function()
             hs.reload()
+          end
+        },
+        ["Toggle SpeedMenu"] = {
+          fn = function()
+            spoon.SpeedMenu:toggle()
           end
         },
         -- Web quieres
@@ -187,7 +196,8 @@ spoon.SpoonInstall:andUse(
       }
       x:refreshAllCommands()
     end,
-    start = true
+    start = true,
+    hotkeys = {toggle = {"cmd", "space"}}
   }
 )
 
@@ -423,38 +433,103 @@ function newAsanaTask(taskName, workspaceName)
   )
 end
 
-----------
--- Seal --
-----------
+----------------
+-- Playground --
+----------------
 
--- Get Seal to refocus last window when it closes
-sealVisible = false
-windowBeforeSeal = nil
+function defaultsWrite(domain, key, value, type)
+  local output, _, _, _ = hs.execute("defaults write " .. domain .. " " .. key .. " -" .. type .. " " .. value)
+  return output
+end
 
-function toggleSeal()
-  if sealVisible then
-    spoon.Seal:toggle()
-    sealVisible = false
-    windowBeforeSeal:focus()
-    windowBeforeSeal = nil
-  else
-    windowBeforeSeal = hs.window.focusedWindow()
-    spoon.Seal:toggle()
-    sealVisible = true
-    hs.timer.doAfter(10, resetSealVisible)
+function defaultsRead(domain, key)
+  local output, _, _, _ = hs.execute("defaults read " .. domain .. " " .. key)
+  return output:sub(1, -2)
+end
+
+function defaultsDelete(domain, key)
+  local output, _, _, _ = hs.execute("defaults delete" .. domain .. " " .. key)
+  return output
+end
+
+function toggleCaprineDarkMode()
+  local caprineApp = hs.application.get("Caprine")
+
+  if caprineApp then
+    caprineApp:kill9()
+  end
+
+  local caprineConfigPath = "/Users/malo/Library/Application Support/Caprine/config.json"
+
+  local f = io.open(caprineConfigPath, "r")
+  local config = hs.json.decode(f:read("*a"))
+  f:close()
+
+  config.darkMode = not config.darkMode
+
+  f = io.open(caprineConfigPath, "w")
+  f:write(hs.json.encode(config, true))
+  f:close()
+
+  if caprineApp then
+    hs.timer.doAfter(
+      1,
+      function()
+        hs.application.open("Caprine")
+      end
+    )
   end
 end
 
-function resetSealVisible()
-  sealVisible = false
-  windowBeforeSeal = nil
+function toggleDarkMode()
+  hs.osascript.applescript(
+    [[
+    tell application "System Events"
+      tell appearance preferences
+        set dark mode to not dark mode
+   	  end tell
+    end tell
+    ]]
+  )
+
+  if defaultsRead("com.alexandrudenk.Dark-Mode-for-Safari.Dark-Mode", "ENABLED_FOR_ALL_SITES_KEY") == "0" then
+    defaultsWrite("com.alexandrudenk.Dark-Mode-for-Safari.Dark-Mode", "ENABLED_FOR_ALL_SITES_KEY", "1", "string")
+  else
+    defaultsWrite("com.alexandrudenk.Dark-Mode-for-Safari.Dark-Mode", "ENABLED_FOR_ALL_SITES_KEY", "0", "string")
+  end
+
+  toggleCaprineDarkMode()
+  hs.preferencesDarkMode(not hs.preferencesDarkMode())
 end
 
-function refocusAfterUserAction()
-  windowBeforeSeal:focus()
-  resetSealVisible()
+function getUtcOffset()
+  local utcOffset, _, _, _ = hs.execute("date +%z")
+  return tonumber(utcOffset:sub(1, -4))
 end
 
-hs.hotkey.bind("cmd", "space", toggleSeal)
+function getSunriseTime()
+  hs.location.start()
+  local time = hs.location.sunrise(hs.location.get(), getUtcOffset())
+  hs.location.stop()
+  return time
+end
+
+function getSunsetTime()
+  hs.location.start()
+  local time = hs.location.sunset(hs.location.get(), getUtcOffset())
+  hs.location.stop()
+  return time
+end
+
+hs.hotkey.bind(
+  "cmd",
+  "`",
+  nil,
+  function()
+    hs.hints.windowHints(hs.window.filter.new(nil):getWindows())
+  end
+)
+hs.hints.hintChars = {"t", "n", "s", "e", "r", "i", "a", "o", "d", "h"}
+hs.hints.showTitleThresh = 10
 
 hs.notify.show("Hammerspoon", "", "Configuration (re)loaded")

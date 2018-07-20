@@ -11,6 +11,7 @@ obj.appSearchPaths = {
    "/Library/PreferencePanes",
    "~/Library/PreferencePanes",
    "/System/Library/CoreServices/Applications",
+   "/System/Library/CoreServices/",
    "/usr/local/Cellar",
    "/Library/Scripts",
    "~/Library/Scripts"
@@ -53,6 +54,7 @@ local updateNameMap = function(obj, msg, info)
    end
 end
 
+hs.application.enableSpotlightForNameSearches(true)
 obj.spotlight = hs.spotlight.new():queryString([[ (kMDItemContentType = "com.apple.application-bundle") || (kMDItemContentType = "com.apple.systempreference.prefpane")  || (kMDItemContentType = "com.apple.applescript.text")  || (kMDItemContentType = "com.apple.applescript.script") ]])
    :callbackMessages("didUpdate", "inProgress")
    :setCallback(updateNameMap)
