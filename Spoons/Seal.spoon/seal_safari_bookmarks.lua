@@ -1,3 +1,7 @@
+--- === Seal.plugins.safari_bookmarks ===
+--- Access Safari bookmarks from Seal
+---
+--- Note: Apple has changed the way Safari stores bookmarks and this plugin no longer works on recent macOS releases.
 local obj = {}
 obj.__index = obj
 obj.__name = "seal_safari_bookmarks"
@@ -10,15 +14,17 @@ obj.icon = hs.image.iconForFileType("com.apple.safari.bookmark")
 obj.always_open_with_safari = true
 
 local modifyNameMap = function(info, add)
+    local name
     for _, item in ipairs(info) do
-        if add then
-            name = item.kMDItemDisplayName
-            url = item.kMDItemURL
-            obj.bookmarkCache[item.kMDItemDisplayName] = {
-                url = item.kMDItemURL,
-            }
-        else
-            obj.bookmarkCache[item.kMDItemDisplayName] = nil
+        name = item.kMDItemDisplayName
+        if name ~= nil then
+            if add then
+                obj.bookmarkCache[name] = {
+                    url = item.kMDItemURL,
+                }
+            else
+                obj.bookmarkCache[name] = nil
+            end
         end
     end
 end

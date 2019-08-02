@@ -1,32 +1,48 @@
+-- luacheck: allow defined top
+
+
 -----------------------
 -- HS initialization --
 -----------------------
-
 -- Load configuration constants used throughout the code
 consts = require "configConsts"
 
 -- Reload Hammerspoon on changes in config dir
-reloadConfWatcher = hs.pathwatcher.new(hs.configdir, hs.reload):start()
+reloadConfWatcher = hs.pathwatcher.new(hs.configdir, hs.reload):start() -- luacheck: ignore
 
--- Misc
-hyper = {"ctrl", "alt", "cmd"}
-hs.window.animationDuration = 0.1
+-- Other misc initialization/config
+hyper = { "ctrl", "alt", "cmd" } -- Modifier combo for later use
 hs.doc.hsdocs.forceExternalBrowser(true)
 
-------------------
--- Spoons setup --
-------------------
 
+-------------------
+-- Spoons config --
+-------------------
 -- SpoonInstall, to manage installation and setup of all other spoons
 -- http://www.hammerspoon.org/Spoons/SpoonInstall.html
-hs.loadSpoon("SpoonInstall")
-spoon.SpoonInstall.use_syncinstall = true
+local spoonInstall = hs.loadSpoon("SpoonInstall")
+
+-- DarkMode, enable/disable DarkMode on a schedule
+-- https://github.com/malob/DarkMode.spoon
+-- spoonInstall:andUse(
+--   "DarkMode",
+--   {
+--     config = {
+--       lightAutoToggle = { enabled = true }
+--     },
+--     start = false
+--   }
+-- )
+
+-- Asana, creates a new task in Asana with a given name in a given workspace
+-- https://github.com/malob/Asana.Spoon
+spoonInstall:andUse("Asana", { config = { apiKey = consts.asanaApiKey } })
 
 -- KSheet, keyboard shortcuts popup window
 -- http://www.hammerspoon.org/Spoons/KSheet.html
 spoon.SpoonInstall:andUse("KSheet")
 local ksheetVisible = false
-function toggleKSheet()
+local function toggleKSheet()
   if ksheetVisible then
     spoon.KSheet:hide()
     ksheetVisible = false
@@ -37,22 +53,14 @@ function toggleKSheet()
 end
 hs.hotkey.bind(hyper, "/", toggleKSheet)
 
--- SpeedMenu, shows upload and download rates in menubar
--- http://www.hammerspoon.org/Spoons/SpeedMenu.html
--- spoon.SpoonInstall:andUse("SpeedMenu", {start = true})
-
--- Miro Windows Manager, easy window movement
--- https://github.com/miromannino/miro-windows-manager
--- http://www.hammerspoon.org/Spoons/MiroWindowsManager.html
-spoon.SpoonInstall:andUse(
-  "MiroWindowsManager",
+-- PersonalHotspot, connect/disconnect a personal hotspoot
+-- https://github.com/malob/PersonalHotspot.spoon
+spoonInstall:andUse(
+  "PersonalHotspot",
   {
-    hotkeys = {
-      up = {hyper, "up"},
-      right = {hyper, "right"},
-      down = {hyper, "down"},
-      left = {hyper, "left"},
-      fullscreen = {hyper, "f"}
+    config = {
+      hotspotName = consts.hotspots[1],
+      appsToKill = consts.highBandwidthApps
     }
   }
 )
@@ -64,7 +72,26 @@ spoon.SpoonInstall:andUse(
   {
     config = {
       default_handler = consts.defaultUrlHandler,
-      url_patterns = consts.urlPatterns
+      url_patterns    = consts.urlPatterns
+    },
+    start = true
+  }
+)
+
+-- USBDeviceActions, opens/closes apps or runs an arbitrary function when a USB device is connected/disconnected
+-- https://github.com/malob/USBDevices.spoon
+function toggleKeyboardLayout(x)
+  if x then hs.keycodes.setLayout("U.S.") else hs.keycodes.setLayout("Colemak") end
+end
+spoonInstall:andUse(
+  "USBDeviceActions",
+  {
+    config = {
+      devices = {
+        ScanSnapiX500EE            = { apps = { "ScanSnap Manager Evernote Edition" } },
+        Planck                     = { fn = toggleKeyboardLayout },
+        ["Corne Keyboard (crkbd)"] = { fn = toggleKeyboardLayout }
+      }
     },
     start = true
   }
@@ -76,118 +103,64 @@ spoon.SpoonInstall:andUse(
   "Seal",
   {
     fn = function(x)
-      x:loadPlugins({"apps", "calc", "useractions"})
+      x:loadPlugins({"apps", "calc", "useractions", "rot13"})
       x.plugins.useractions.actions = {
+
+        -- Asana
+        ["New Asana task in " .. consts.asanaWorkWorkspaceName] = {
+          fn      = function(y) spoon.Asana:createTask(y, consts.asanaWorkWorkspaceName) end,
+          keyword = "awork"
+        },
+        ["New Asana task in " .. consts.asanaPersonalWorkspaceName] = {
+          fn      = function(y) spoon.Asana:createTask(y, consts.asanaPersonalWorkspaceName) end,
+          keyword = "ahome"
+        },
+
         -- Audio devices commands
-        ["Connect Beats"] = {
-          fn = function()
-            changeAudioDevice("Malo’s Beats Studio³")
-            refocusAfterUserAction()
-          end
-        },
-        ["Connect AirPods"] = {
-          fn = function()
-            changeAudioDevice("Malo’s AirPods")
-          end
-        },
-        ["Connect LG Display"] = {
-          fn = function()
-            changeAudioDevice("LG UltraFine Display Audio")
-          end
-        },
-        ["Connect Built-in"] = {
+        ["Connect AirPods"]    = { fn = function() changeAudioDevice("Malo’s AirPods") end },
+        ["Connect Beats"]      = { fn = function() changeAudioDevice("Malo’s Beats Studio³") end },
+        ["Connect LG Display"] = { fn = function() changeAudioDevice("LG UltraFine Display Audio") end },
+        ["Connect Built-in"]   = {
           fn = function()
             hs.audiodevice.findInputByName("Built-in Microphone"):setDefaultInputDevice()
             hs.audiodevice.findOutputByName("Built-in Output"):setDefaultOutputDevice()
             hs.notify.show("Audio Device", "", "Built-in connected")
           end
         },
+
+        -- Hammerspoon
+        ["Hammerspoon Docs"]   = { fn = function(y) hs.doc.hsdocs.help(y) end, keyword = "hsdocs" },
+        ["Reload Hammerspoon"] = { fn = function() hs.reload() end },
+
+        -- Power commands
+        ["Lock"]           = { fn = function() hs.eventtap.keyStroke({ "cmd", "ctrl" }, "q") end },
+        ["Restart/Reboot"] = { fn = function() hs.caffeinate.restartSystem() end },
+        ["Shutdown"]       = { fn = function() hs.caffeinate.shutdownSystem() end },
+
         -- Text-to-speech commands
-        ["Pause/Play TTS"] = {
-          fn = function()
-            pauseOrContinueTts()
-          end
-        },
-        ["Speak text"] = {
-          fn = function(x)
-            speakText(x)
-          end,
-          keyword = "speak"
-        },
-        ["Add article to TTS podcast"] = {
-          fn = function(x)
-            ttsPodcast(x)
-          end,
-          keyword = "ttspod"
-        },
-        -- Asana
-        ["New Asana task in " .. consts.asanaWorkWorkspaceName] = {
-          fn = function(x)
-            newAsanaTask(x, consts.asanaWorkWorkspaceName)
-          end,
-          keyword = "awork"
-        },
-        ["New Asana task in " .. consts.asanaPersonalWorkspaceName] = {
-          fn = function(x)
-            newAsanaTask(x, consts.asanaPersonalWorkspaceName)
-          end,
-          keyword = "ahome"
-        },
-        -- System commands
-        ["Restart/Reboot"] = {
-          fn = function()
-            hs.caffeinate.restartSystem()
-          end
-        },
-        ["Shutdown"] = {
-          fn = function()
-            hs.caffeinate.shutdownSystem()
-          end
-        },
-        ["Lock"] = {
-          fn = function()
-            hs.eventtap.keyStroke({"cmd", "ctrl"}, "q")
-          end
-        },
-        ["Toggle tethering"] = {
-          fn = function()
-            toggleTethering()
-          end
-        },
-        ["Toggle dark mode"] = {
-          fn = function()
-            toggleDarkMode()
-          end
-        },
+        ["Add article to TTS podcast"] = { fn = function(y) ttsPodcast(y) end, keyword = "ttspod" },
+        ["Pause/Play TTS"]             = { fn = function() pauseOrContinueTts() end },
+        ["Speak text"]                 = { fn = function(y) speakText(y) end, keyword = "speak" },
+
+        -- Other commands
+        ["Toggle hotspot"] = { fn = function() spoon.PersonalHotspot:toggle() end },
         ["Make a phone call"] = {
-          fn = function(x)
-            hs.urlevent.openURL("tel://" .. hs.http.encodeForQuery(x))
-          end,
+          fn = function(y) hs.urlevent.openURL("tel://" .. hs.http.encodeForQuery(y)) end,
           keyword = "call"
         },
+        ["Rotate Display"] = {
+          fn = function(y)
+            local screen = hs.screen.primaryScreen()
+            return screen:rotate() == 0 and screen:rotate(90) or screen:rotate(0)
+          end
+        },
         ["Search in Maps"] = {
-          fn = function(x)
-            hs.urlevent.openURLWithBundle("http://maps.apple.com/?q=" .. hs.http.encodeForQuery(x), "com.apple.Maps")
+          fn = function(y)
+            hs.urlevent.openURLWithBundle("http://maps.apple.com/?q=" .. hs.http.encodeForQuery(y), "com.apple.Maps")
           end,
           keyword = "map"
         },
-        -- Hammerspoon
-        ["Hammerspoon Docs"] = {
-          fn = function(x)
-            hs.doc.hsdocs.help(x)
-          end,
-          keyword = "hsdocs"
-        },
-        ["Reload Hammerspoon"] = {
-          fn = function()
-            hs.reload()
-          end
-        },
-        ["Toggle SpeedMenu"] = {
-          fn = function()
-            spoon.SpeedMenu:toggle()
-          end
-        },
+
         -- Web quieres
         ["Search Duck Duck Go"] = {
           url = "https://duckduckgo.com/?q=${query}",
@@ -197,155 +170,10 @@ spoon.SpoonInstall:andUse(
       x:refreshAllCommands()
     end,
     start = true,
-    hotkeys = {toggle = {"cmd", "space"}}
+    hotkeys = { toggle = { "cmd", "space" } }
   }
 )
 
-------------------
--- VPN and WiFi --
-------------------
-
--- Toggle tethering for devices connected to iCloud account
--- Uses Applescript to manipulate the Wi-Fi menu item
-function toggleTethering()
-  local wifiMenuItem = consts.hotspots[1]
-  local delay = 5 -- tethering options often don't appear in menu right away
-
-  if hs.wifi.currentNetwork() == consts.hotspots[1] then
-    wifiMenuItem = "Disconnect from " .. wifiMenuItem
-    delay = 0
-  end
-
-  hs.osascript.applescript(
-    string.format(
-      [[
-      tell application "System Events" to tell process "SystemUIServer"
-  	    set wifi to (first menu bar item whose description contains "Wi-Fi") of menu bar 1
-        click wifi
-        delay %i
-        click (first menu item whose title contains "%s") of menu of wifi
-      end tell
-      ]],
-      delay,
-      wifiMenuItem
-    )
-  )
-end
-
--- Watches for SSID change
--- If network isn't trusted loads VPN application
--- If network is a hotspot kills high-bandwidth apps
-function wifiChange(watcher, message, interface)
-  local ssid = hs.wifi.currentNetwork(interface)
-
-  if ssid and message == "SSIDChange" then
-    hs.notify.show("WiFi", "", "Connected to " .. ssid)
-
-    -- Connect/disconnect from VPN
-    if hs.fnutils.contains(hs.fnutils.concat(consts.trustedNetworks, consts.hotspots), ssid) then
-      local vpnApp = hs.application.get(consts.vpnApp)
-      if vpnApp then
-        vpnApp:kill9()
-      end
-    else
-      hs.application.open(consts.vpnApp)
-    end
-
-    -- Hotspot specific
-    if hs.fnutils.contains(consts.hotspots, ssid) then
-      hs.fnutils.ieach(
-        consts.highBandwidthApps,
-        function(x)
-          app = hs.application.get(x)
-          if app then
-            app:kill()
-          end
-        end
-      )
-    else
-      hs.fnutils.ieach(
-        consts.highBandwidthApps,
-        function(x)
-          hs.application.open(x)
-        end
-      )
-    end
-  end
-end
-
-hs.wifi.watcher.new(wifiChange):start()
-
-----------------------------
--- Text-to-speech podcast --
-----------------------------
-
--- Submits a url to an article to text-to-speech podcast generator
--- If url is nil as an argument then uses whatever text is currently selected
--- See https://github.com/malob/article-to-audio-cloud-function for info on the rest of the service
-function ttsPodcast(url)
-  if not url then
-    hs.eventtap.keyStroke({"cmd"}, "c")
-    url = hs.pasteboard.readString()
-  end
-  hs.notify.show("TTS Podcast", "", "Adding new article")
-  local data = {["url"] = url}
-  hs.http.asyncPost(
-    consts.ttsPodcastUrl,
-    hs.json.encode(data, true),
-    {["Content-Type"] = "application/json"},
-    function(code, response, headers)
-      if code == 200 then
-        hs.notify.show("TTS Podcast", "", "Article added successfully!")
-      else
-        hs.notify.show("TTS Podcast", "", "Error adding article!")
-        print(response)
-        hs.toggleConsole()
-      end
-    end
-  )
-end
-
-hs.hotkey.bind({"cmd", "shift"}, hs.keycodes.map["escape"], ttsPodcast)
-
---------------------------
--- macOS text-to-speech --
---------------------------
-ttsSynth = hs.speech.new(consts.osTtsVoice)
-ttsSynth:rate(consts.osTtsRate)
-itunesWasPlaying = false
-
-function pauseOrContinueTts()
-  if ttsSynth:isPaused() then
-    ttsSynth:continue()
-  else
-    ttsSynth:pause()
-  end
-end
-
--- Speaks text using macOS text-to-speech
--- If textToSpeak is nil currently selected text is used
-function speakText(textToSpeak)
-  if not textToSpeak then
-    hs.eventtap.keyStroke({"cmd"}, "c")
-    textToSpeak = hs.pasteboard.readString()
-  end
-  if ttsSynth:isSpeaking() then
-    ttsSynth:stop()
-    if iTunesWasPlaying then
-      hs.itunes.play()
-      itunesWasPlaying = false
-    end
-  else
-    if hs.itunes.isPlaying() then
-      hs.itunes.pause()
-      iTunesWasPlaying = true
-    end
-    ttsSynth:speak(textToSpeak)
-  end
-end
-
-hs.hotkey.bind("option", "escape", speakText)
-hs.hotkey.bind({"option", "shift"}, "escape", pauseOrContinueTts)
 
 ----------------------------
 -- Audio device functions --
@@ -363,7 +191,7 @@ function changeAudioDevice(deviceName)
       string.format(
         [[
         tell application "System Events" to tell process "SystemUIServer"
-	        set vol to (first menu bar item whose description contains "Volume") of menu bar 1
+          set vol to (first menu bar item whose description contains "Volume") of menu bar 1
           click vol
           delay 3
           click (first menu item whose title is "%s") of menu of vol
@@ -381,155 +209,142 @@ function changeAudioDevice(deviceName)
   end
 end
 
------------
--- Asana --
------------
 
--- Setup core constants
-asana = {}
-asana.baseUrl = "https://app.asana.com/api/1.0"
-asana.reqHeader = {["Authorization"] = "Bearer " .. consts.asanaApiKey}
-asana.userId = nil
-asana.workspaceIds = {}
+----------------------------
+-- Text-to-speech podcast --
+----------------------------
 
--- Get Asana userId and workspaceIds
-function getAsanaIds()
-  local code, res, headers = hs.http.get(asana.baseUrl .. "/users/me", asana.reqHeader)
-  res = hs.json.decode(res)
-  asana.userId = res.data.id
-  hs.fnutils.each(
-    res.data.workspaces,
-    function(x)
-      asana.workspaceIds[x.name] = x.id
-    end
-  )
-end
-
--- Creates a new Asana task with a given name in a given workspace
--- First time function is called it retrieves IDs
-function newAsanaTask(taskName, workspaceName)
-  if not asana.userId then
-    getAsanaIds()
-  end
+-- Submits a url to an article to text-to-speech podcast generator
+-- If url is nil as an argument then uses whatever text is currently selected
+-- See https://github.com/malob/serverless-tts-podcast for info on the rest of the service
+function ttsHttpPost(data, url)
+  hs.notify.show("TTS Podcast", "", "Adding new content")
+  local postData = { ["messages"] = { { ["data"] = data } } }
   hs.http.asyncPost(
-    string.format(
-      "%s/tasks?assignee=%i&workspace=%i&name=%s",
-      asana.baseUrl,
-      asana.userId,
-      asana.workspaceIds[workspaceName],
-      hs.http.encodeForQuery(taskName)
-    ),
-    "", -- requires empty body
-    asana.reqHeader,
-    function(code, res, headers)
-      if code == 201 then
-        hs.notify.show("Asana", "", "New task added to workspace: " .. workspaceName)
+    url,
+    hs.json.encode(postData, true),
+    {["Content-Type"] = "application/json"},
+    function(code, response)
+      if code == 200 then
+        hs.notify.show("TTS Podcast", "", "Content received successfully!")
       else
-        hs.notify.show("Asana", "", "Error adding task")
-        print(res)
+        hs.notify.show("TTS Podcast", "", "Error sending content!")
+        print(response)
         hs.toggleConsole()
       end
     end
   )
 end
 
-----------------
--- Playground --
-----------------
-
-function defaultsWrite(domain, key, value, type)
-  local output, _, _, _ = hs.execute("defaults write " .. domain .. " " .. key .. " -" .. type .. " " .. value)
-  return output
-end
-
-function defaultsRead(domain, key)
-  local output, _, _, _ = hs.execute("defaults read " .. domain .. " " .. key)
-  return output:sub(1, -2)
-end
-
-function defaultsDelete(domain, key)
-  local output, _, _, _ = hs.execute("defaults delete" .. domain .. " " .. key)
-  return output
-end
-
-function toggleCaprineDarkMode()
-  local caprineApp = hs.application.get("Caprine")
-
-  if caprineApp then
-    caprineApp:kill9()
+function ttsPodcast(url)
+  if not url then
+    hs.eventtap.keyStroke({ "cmd" }, "c")
+    url = hs.pasteboard.readString()
   end
+  ttsHttpPost(hs.base64.encode(url), consts.ttsPodcastArticleUrl)
+end
+hs.hotkey.bind({ "cmd", "shift" }, "escape", ttsPodcast)
 
-  local caprineConfigPath = "/Users/malo/Library/Application Support/Caprine/config.json"
+function ttsPodcastCustom()
+  local content   = hs.pasteboard.readString()
+  local _, title  = hs.dialog.textPrompt("Enter Title", "")
+  local _, author = hs.dialog.textPrompt("Enter Author", "")
+  local _, date   = hs.dialog.textPrompt("Enter Publication Date", "")
+  local _, url    = hs.dialog.textPrompt("Enter URL", "")
 
-  local f = io.open(caprineConfigPath, "r")
-  local config = hs.json.decode(f:read("*a"))
-  f:close()
+  local data = {
+    ["title"]          = title,
+    ["author"]         = author,
+    ["date_published"] = date,
+    ["url"]            = url,
+    ["content"]        = content
+  }
 
-  config.darkMode = not config.darkMode
-
-  f = io.open(caprineConfigPath, "w")
-  f:write(hs.json.encode(config, true))
-  f:close()
-
-  if caprineApp then
-    hs.timer.doAfter(
-      1,
-      function()
-        hs.application.open("Caprine")
-      end
-    )
-  end
+  ttsHttpPost(hs.base64.encode(hs.json.encode(data, true)), consts.ttsPodcastDataUrl)
 end
 
-function toggleDarkMode()
-  hs.osascript.applescript(
-    [[
-    tell application "System Events"
-      tell appearance preferences
-        set dark mode to not dark mode
-   	  end tell
-    end tell
-    ]]
-  )
+hs.hotkey.bind({ "cmd", "shift", "control" }, "escape", ttsPodcastCustom)
 
-  if defaultsRead("com.alexandrudenk.Dark-Mode-for-Safari.Dark-Mode", "ENABLED_FOR_ALL_SITES_KEY") == "0" then
-    defaultsWrite("com.alexandrudenk.Dark-Mode-for-Safari.Dark-Mode", "ENABLED_FOR_ALL_SITES_KEY", "1", "string")
+
+--------------------------
+-- macOS text-to-speech --
+--------------------------
+
+ttsSynth = hs.speech.new(consts.osTtsVoice)
+ttsSynth:rate(consts.osTtsRate)
+iTunesWasPlaying = false
+
+function pauseOrContinueTts()
+  if ttsSynth:isPaused() then
+    ttsSynth:continue()
   else
-    defaultsWrite("com.alexandrudenk.Dark-Mode-for-Safari.Dark-Mode", "ENABLED_FOR_ALL_SITES_KEY", "0", "string")
+    ttsSynth:pause()
   end
-
-  toggleCaprineDarkMode()
-  hs.preferencesDarkMode(not hs.preferencesDarkMode())
 end
 
-function getUtcOffset()
-  local utcOffset, _, _, _ = hs.execute("date +%z")
-  return tonumber(utcOffset:sub(1, -4))
-end
-
-function getSunriseTime()
-  hs.location.start()
-  local time = hs.location.sunrise(hs.location.get(), getUtcOffset())
-  hs.location.stop()
-  return time
-end
-
-function getSunsetTime()
-  hs.location.start()
-  local time = hs.location.sunset(hs.location.get(), getUtcOffset())
-  hs.location.stop()
-  return time
-end
-
-hs.hotkey.bind(
-  "cmd",
-  "`",
-  nil,
-  function()
-    hs.hints.windowHints(hs.window.filter.new(nil):getWindows())
+-- Speaks text using macOS text-to-speech
+-- If textToSpeak is nil currently selected text is used
+function speakText(textToSpeak)
+  if not textToSpeak then
+    hs.eventtap.keyStroke({ "cmd" }, "c")
+    textToSpeak = hs.pasteboard.readString()
   end
-)
+  if ttsSynth:isSpeaking() then
+    ttsSynth:stop()
+    if iTunesWasPlaying then
+      hs.itunes.play()
+      iTunesWasPlaying = false
+    end
+  else
+    if hs.itunes.isPlaying() then
+      hs.itunes.pause()
+      iTunesWasPlaying = true
+    end
+    ttsSynth:speak(textToSpeak)
+  end
+end
+
+hs.hotkey.bind("option", "escape", speakText)
+hs.hotkey.bind({ "option", "shift" }, "escape", pauseOrContinueTts)
+
+
+------------------
+-- VPN and WiFi --
+------------------
+
+-- Watches for SSID change
+-- If network isn't trusted loads VPN application
+-- If network is a hotspot kills high-bandwidth apps
+function wifiChange(_, message, interface)
+  local ssid = hs.wifi.currentNetwork(interface)
+
+  if ssid and message == "SSIDChange" then
+    hs.notify.show("WiFi", "", "Connected to " .. ssid)
+
+    -- Connect/disconnect from VPN
+    if hs.fnutils.contains(hs.fnutils.concat(consts.trustedNetworks, consts.hotspots), ssid) then
+      local vpnApp = hs.application.get(consts.vpnApp)
+      if vpnApp then
+        vpnApp:kill9()
+      end
+    else
+      hs.application.open(consts.vpnApp)
+    end
+  end
+end
+
+hs.wifi.watcher.new(wifiChange):start()
+
+
+-----------------
+-- Other stuff --
+-----------------
+
+-- Hints setup
+hs.hotkey.bind(hyper, "`", nil, hs.hints.windowHints)
 hs.hints.hintChars = {"t", "n", "s", "e", "r", "i", "a", "o", "d", "h"}
-hs.hints.showTitleThresh = 10
+hs.hints.showTitleThresh = 0
+hs.window.animationDuration = 0.1
 
+-- Send notification that config has been (re)loaded
 hs.notify.show("Hammerspoon", "", "Configuration (re)loaded")

@@ -19,17 +19,19 @@ obj.appSearchPaths = {
 
 local modifyNameMap = function(info, add)
    for _, item in ipairs(info) do
+      icon = nil
+      local displayname = item.kMDItemDisplayName or hs.fs.displayName(item.kMDItemPath)
+      displayname = displayname:gsub("%.app$", "", 1)
+      if string.find(item.kMDItemPath, "%.prefPane$") then
+         displayname = displayname .. " preferences"
+         if add then
+            icon = hs.image.iconForFile(item.kMDItemPath)
+         end
+      end
       if add then
          bundleID = item.kMDItemCFBundleIdentifier
-         icon = nil
-         if bundleID then
-            icon = hs.image.imageFromAppBundle(bundleID)
-         end
-         local displayname = item.kMDItemDisplayName
-         displayname = displayname:gsub("%.app$", "", 1)
-         if string.find(item.kMDItemPath, "%.prefPane$") then
-            displayname = item.kMDItemDisplayName .. " preferences"
-            icon = hs.image.iconForFile(item.kMDItemPath)
+         if (not icon) and (bundleID) then
+           icon = hs.image.imageFromAppBundle(bundleID)
          end
          obj.appCache[displayname] = {
             path = item.kMDItemPath,
@@ -37,7 +39,7 @@ local modifyNameMap = function(info, add)
             icon = icon
          }
       else
-         obj.appCache[item.kMDItemDisplayName] = nil
+         obj.appCache[displayname] = nil
       end
    end
 end
