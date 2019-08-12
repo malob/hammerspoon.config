@@ -1,640 +1,2326 @@
 [
   {
-    "Command": [],
-    "Constant": [],
-    "Constructor": [],
-    "Deprecated": [],
-    "Field": [],
-    "Function": [],
-    "Method": [
-      {
-        "def": "Seal:bindHotkeys(mapping)",
-        "desc": "Binds hotkeys for Seal",
-        "doc": "Binds hotkeys for Seal\n\nParameters:\n * mapping - A table containing hotkey modifier/key details for the following (optional) items:\n  * show - This will cause Seal's UI to be shown\n  * toggle - This will cause Seal's UI to be shown or hidden depending on its current state\n\nReturns:\n * The Seal object",
-        "name": "bindHotkeys",
-        "parameters": [
-          " * mapping - A table containing hotkey modifier/key details for the following (optional) items:",
-          "  * show - This will cause Seal's UI to be shown",
-          "  * toggle - This will cause Seal's UI to be shown or hidden depending on its current state"
-        ],
-        "returns": [
-          " * The Seal object"
-        ],
-        "signature": "Seal:bindHotkeys(mapping)",
-        "stripped_doc": "",
-        "type": "Method"
-      },
-      {
-        "def": "Seal:loadPluginFromFile(plugin_name, file)",
-        "desc": "Loads a plugin from a given file",
-        "doc": "Loads a plugin from a given file\n\nParameters:\n * plugin_name - the name of the plugin, without \"seal_\" at the beginning or \".lua\" at the end\n * file - the file where the plugin code is stored.\n\nReturns:\n * The Seal object if the plugin was successfully loaded, `nil` otherwise\n\nNotes:\n * You should normally use `Seal:loadPlugins()`. This method allows you to load plugins\n   from non-standard locations and is mostly a development interface.\n * Some plugins may immediately begin doing background work (e.g. Spotlight searches)",
-        "name": "loadPluginFromFile",
-        "notes": [
-          " * You should normally use `Seal:loadPlugins()`. This method allows you to load plugins",
-          "   from non-standard locations and is mostly a development interface.",
-          " * Some plugins may immediately begin doing background work (e.g. Spotlight searches)"
-        ],
-        "parameters": [
-          " * plugin_name - the name of the plugin, without \"seal_\" at the beginning or \".lua\" at the end",
-          " * file - the file where the plugin code is stored."
-        ],
-        "returns": [
-          " * The Seal object if the plugin was successfully loaded, `nil` otherwise"
-        ],
-        "signature": "Seal:loadPluginFromFile(plugin_name, file)",
-        "stripped_doc": "",
-        "type": "Method"
-      },
-      {
-        "def": "Seal:loadPlugins(plugins)",
-        "desc": "Loads a list of Seal plugins",
-        "doc": "Loads a list of Seal plugins\n\nParameters:\n * plugins - A list containing the names of plugins to load\n\nReturns:\n * The Seal object\n\nNotes:\n * The plugins live inside the Seal.spoon directory\n * The plugin names in the list, should not have `seal_` at the start, or `.lua` at the end\n * Some plugins may immediately begin doing background work (e.g. Spotlight searches)",
-        "name": "loadPlugins",
-        "notes": [
-          " * The plugins live inside the Seal.spoon directory",
-          " * The plugin names in the list, should not have `seal_` at the start, or `.lua` at the end",
-          " * Some plugins may immediately begin doing background work (e.g. Spotlight searches)"
-        ],
-        "parameters": [
-          " * plugins - A list containing the names of plugins to load"
-        ],
-        "returns": [
-          " * The Seal object"
-        ],
-        "signature": "Seal:loadPlugins(plugins)",
-        "stripped_doc": "",
-        "type": "Method"
-      },
-      {
-        "def": "Seal:refreshAllCommands()",
-        "desc": "Refresh the list of commands provided by all the currently loaded plugins.",
-        "doc": "Refresh the list of commands provided by all the currently loaded plugins.\n\nParameters:\n * None\n\nReturns:\n * The Seal object\n\nNotes:\n * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands.",
-        "name": "refreshAllCommands",
-        "notes": [
-          " * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands."
-        ],
-        "parameters": [
-          " * None"
-        ],
-        "returns": [
-          " * The Seal object"
-        ],
-        "signature": "Seal:refreshAllCommands()",
-        "stripped_doc": "",
-        "type": "Method"
-      },
-      {
-        "def": "Seal:refreshCommandsForPlugin(plugin_name)",
-        "desc": "Refresh the list of commands provided by the given plugin.",
-        "doc": "Refresh the list of commands provided by the given plugin.\n\nParameters:\n * plugin_name - the name of the plugin. Should be the name as passed to `loadPlugins()` or `loadPluginFromFile`.\n\nReturns:\n * The Seal object\n\nNotes:\n * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands.",
-        "name": "refreshCommandsForPlugin",
-        "notes": [
-          " * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands."
-        ],
-        "parameters": [
-          " * plugin_name - the name of the plugin. Should be the name as passed to `loadPlugins()` or `loadPluginFromFile`."
-        ],
-        "returns": [
-          " * The Seal object"
-        ],
-        "signature": "Seal:refreshCommandsForPlugin(plugin_name)",
-        "stripped_doc": "",
-        "type": "Method"
-      },
-      {
-        "def": "Seal:show(query)",
-        "desc": "Shows the Seal UI",
-        "doc": "Shows the Seal UI\n\nParameters:\n * query - An optional string to pre-populate the query box with\n\nReturns:\n * None\n\nNotes:\n * This may be useful if you wish to show Seal in response to something other than its hotkey",
-        "name": "show",
-        "notes": [
-          " * This may be useful if you wish to show Seal in response to something other than its hotkey"
-        ],
-        "parameters": [
-          " * query - An optional string to pre-populate the query box with"
-        ],
-        "returns": [
-          " * None"
-        ],
-        "signature": "Seal:show(query)",
-        "stripped_doc": "",
-        "type": "Method"
-      },
-      {
-        "def": "Seal:start()",
-        "desc": "Starts Seal",
-        "doc": "Starts Seal\n\nParameters:\n * None\n\nReturns:\n * The Seal object",
-        "name": "start",
-        "parameters": [
-          " * None"
-        ],
-        "returns": [
-          " * The Seal object"
-        ],
-        "signature": "Seal:start()",
-        "stripped_doc": "",
-        "type": "Method"
-      },
-      {
-        "def": "Seal:stop()",
-        "desc": "Stops Seal",
-        "doc": "Stops Seal\n\nParameters:\n * None\n\nReturns:\n * The Seal object\n\nNotes:\n * Some Seal plugins will continue performing background work even after this call (e.g. Spotlight searches)",
-        "name": "stop",
-        "notes": [
-          " * Some Seal plugins will continue performing background work even after this call (e.g. Spotlight searches)"
-        ],
-        "parameters": [
-          " * None"
-        ],
-        "returns": [
-          " * The Seal object"
-        ],
-        "signature": "Seal:stop()",
-        "stripped_doc": "",
-        "type": "Method"
-      },
-      {
-        "def": "Seal:toggle(query)",
-        "desc": "Shows or hides the Seal UI",
-        "doc": "Shows or hides the Seal UI\n\nParameters:\n * query - An optional string to pre-populate the query box with\n\nReturns:\n * None",
-        "name": "toggle",
-        "parameters": [
-          " * query - An optional string to pre-populate the query box with"
-        ],
-        "returns": [
-          " * None"
-        ],
-        "signature": "Seal:toggle(query)",
-        "stripped_doc": "",
-        "type": "Method"
-      }
+    "Constant" : [
+
     ],
-    "Variable": [
-      {
-        "def": "Seal.plugin_search_paths",
-        "desc": "List of directories where Seal will look for plugins. Defaults to `~/.hammerspoon/seal_plugins/` and the Seal Spoon directory.",
-        "doc": "List of directories where Seal will look for plugins. Defaults to `~/.hammerspoon/seal_plugins/` and the Seal Spoon directory.",
-        "name": "plugin_search_paths",
-        "signature": "Seal.plugin_search_paths",
-        "stripped_doc": "",
-        "type": "Variable"
-      }
-    ],
-    "desc": "Pluggable launch bar",
-    "doc": "Pluggable launch bar\n\nDownload: [https://github.com/Hammerspoon/Spoons/raw/master/Spoons/Seal.spoon.zip](https://github.com/Hammerspoon/Spoons/raw/master/Spoons/Seal.spoon.zip)\n\nSeal includes a number of plugins, which you can choose to load (see `:loadPlugins()` below):\n * apps : Launch applications by name\n * calc : Simple calculator\n * rot13 : Apply ROT13 substitution cipher\n * safari_bookmarks : Open Safari bookmarks (this is broken since at least High Sierra)\n * screencapture : Lets you take screenshots in various ways\n * urlformats : User defined URL formats to open\n * useractions : User defined custom actions\n * vpn : Connect and disconnect VPNs (currently supports Viscosity and macOS system preferences)A",
-    "items": [
-      {
-        "def": "Seal:bindHotkeys(mapping)",
-        "desc": "Binds hotkeys for Seal",
-        "doc": "Binds hotkeys for Seal\n\nParameters:\n * mapping - A table containing hotkey modifier/key details for the following (optional) items:\n  * show - This will cause Seal's UI to be shown\n  * toggle - This will cause Seal's UI to be shown or hidden depending on its current state\n\nReturns:\n * The Seal object",
-        "name": "bindHotkeys",
-        "parameters": [
-          " * mapping - A table containing hotkey modifier/key details for the following (optional) items:",
-          "  * show - This will cause Seal's UI to be shown",
-          "  * toggle - This will cause Seal's UI to be shown or hidden depending on its current state"
-        ],
-        "returns": [
-          " * The Seal object"
-        ],
-        "signature": "Seal:bindHotkeys(mapping)",
-        "stripped_doc": "",
-        "type": "Method"
-      },
-      {
-        "def": "Seal:loadPluginFromFile(plugin_name, file)",
-        "desc": "Loads a plugin from a given file",
-        "doc": "Loads a plugin from a given file\n\nParameters:\n * plugin_name - the name of the plugin, without \"seal_\" at the beginning or \".lua\" at the end\n * file - the file where the plugin code is stored.\n\nReturns:\n * The Seal object if the plugin was successfully loaded, `nil` otherwise\n\nNotes:\n * You should normally use `Seal:loadPlugins()`. This method allows you to load plugins\n   from non-standard locations and is mostly a development interface.\n * Some plugins may immediately begin doing background work (e.g. Spotlight searches)",
-        "name": "loadPluginFromFile",
-        "notes": [
-          " * You should normally use `Seal:loadPlugins()`. This method allows you to load plugins",
-          "   from non-standard locations and is mostly a development interface.",
-          " * Some plugins may immediately begin doing background work (e.g. Spotlight searches)"
-        ],
-        "parameters": [
-          " * plugin_name - the name of the plugin, without \"seal_\" at the beginning or \".lua\" at the end",
-          " * file - the file where the plugin code is stored."
-        ],
-        "returns": [
-          " * The Seal object if the plugin was successfully loaded, `nil` otherwise"
-        ],
-        "signature": "Seal:loadPluginFromFile(plugin_name, file)",
-        "stripped_doc": "",
-        "type": "Method"
-      },
-      {
-        "def": "Seal:loadPlugins(plugins)",
-        "desc": "Loads a list of Seal plugins",
-        "doc": "Loads a list of Seal plugins\n\nParameters:\n * plugins - A list containing the names of plugins to load\n\nReturns:\n * The Seal object\n\nNotes:\n * The plugins live inside the Seal.spoon directory\n * The plugin names in the list, should not have `seal_` at the start, or `.lua` at the end\n * Some plugins may immediately begin doing background work (e.g. Spotlight searches)",
-        "name": "loadPlugins",
-        "notes": [
-          " * The plugins live inside the Seal.spoon directory",
-          " * The plugin names in the list, should not have `seal_` at the start, or `.lua` at the end",
-          " * Some plugins may immediately begin doing background work (e.g. Spotlight searches)"
-        ],
-        "parameters": [
-          " * plugins - A list containing the names of plugins to load"
-        ],
-        "returns": [
-          " * The Seal object"
-        ],
-        "signature": "Seal:loadPlugins(plugins)",
-        "stripped_doc": "",
-        "type": "Method"
-      },
-      {
-        "def": "Seal.plugin_search_paths",
-        "desc": "List of directories where Seal will look for plugins. Defaults to `~/.hammerspoon/seal_plugins/` and the Seal Spoon directory.",
-        "doc": "List of directories where Seal will look for plugins. Defaults to `~/.hammerspoon/seal_plugins/` and the Seal Spoon directory.",
-        "name": "plugin_search_paths",
-        "signature": "Seal.plugin_search_paths",
-        "stripped_doc": "",
-        "type": "Variable"
-      },
-      {
-        "def": "Seal:refreshAllCommands()",
-        "desc": "Refresh the list of commands provided by all the currently loaded plugins.",
-        "doc": "Refresh the list of commands provided by all the currently loaded plugins.\n\nParameters:\n * None\n\nReturns:\n * The Seal object\n\nNotes:\n * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands.",
-        "name": "refreshAllCommands",
-        "notes": [
-          " * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands."
-        ],
-        "parameters": [
-          " * None"
-        ],
-        "returns": [
-          " * The Seal object"
-        ],
-        "signature": "Seal:refreshAllCommands()",
-        "stripped_doc": "",
-        "type": "Method"
-      },
-      {
-        "def": "Seal:refreshCommandsForPlugin(plugin_name)",
-        "desc": "Refresh the list of commands provided by the given plugin.",
-        "doc": "Refresh the list of commands provided by the given plugin.\n\nParameters:\n * plugin_name - the name of the plugin. Should be the name as passed to `loadPlugins()` or `loadPluginFromFile`.\n\nReturns:\n * The Seal object\n\nNotes:\n * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands.",
-        "name": "refreshCommandsForPlugin",
-        "notes": [
-          " * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands."
-        ],
-        "parameters": [
-          " * plugin_name - the name of the plugin. Should be the name as passed to `loadPlugins()` or `loadPluginFromFile`."
-        ],
-        "returns": [
-          " * The Seal object"
-        ],
-        "signature": "Seal:refreshCommandsForPlugin(plugin_name)",
-        "stripped_doc": "",
-        "type": "Method"
-      },
-      {
-        "def": "Seal:show(query)",
-        "desc": "Shows the Seal UI",
-        "doc": "Shows the Seal UI\n\nParameters:\n * query - An optional string to pre-populate the query box with\n\nReturns:\n * None\n\nNotes:\n * This may be useful if you wish to show Seal in response to something other than its hotkey",
-        "name": "show",
-        "notes": [
-          " * This may be useful if you wish to show Seal in response to something other than its hotkey"
-        ],
-        "parameters": [
-          " * query - An optional string to pre-populate the query box with"
-        ],
-        "returns": [
-          " * None"
-        ],
-        "signature": "Seal:show(query)",
-        "stripped_doc": "",
-        "type": "Method"
-      },
-      {
-        "def": "Seal:start()",
-        "desc": "Starts Seal",
-        "doc": "Starts Seal\n\nParameters:\n * None\n\nReturns:\n * The Seal object",
-        "name": "start",
-        "parameters": [
-          " * None"
-        ],
-        "returns": [
-          " * The Seal object"
-        ],
-        "signature": "Seal:start()",
-        "stripped_doc": "",
-        "type": "Method"
-      },
-      {
-        "def": "Seal:stop()",
-        "desc": "Stops Seal",
-        "doc": "Stops Seal\n\nParameters:\n * None\n\nReturns:\n * The Seal object\n\nNotes:\n * Some Seal plugins will continue performing background work even after this call (e.g. Spotlight searches)",
-        "name": "stop",
-        "notes": [
-          " * Some Seal plugins will continue performing background work even after this call (e.g. Spotlight searches)"
-        ],
-        "parameters": [
-          " * None"
-        ],
-        "returns": [
-          " * The Seal object"
-        ],
-        "signature": "Seal:stop()",
-        "stripped_doc": "",
-        "type": "Method"
-      },
-      {
-        "def": "Seal:toggle(query)",
-        "desc": "Shows or hides the Seal UI",
-        "doc": "Shows or hides the Seal UI\n\nParameters:\n * query - An optional string to pre-populate the query box with\n\nReturns:\n * None",
-        "name": "toggle",
-        "parameters": [
-          " * query - An optional string to pre-populate the query box with"
-        ],
-        "returns": [
-          " * None"
-        ],
-        "signature": "Seal:toggle(query)",
-        "stripped_doc": "",
-        "type": "Method"
-      }
-    ],
-    "name": "Seal",
-    "stripped_doc": "\nDownload: [https://github.com/Hammerspoon/Spoons/raw/master/Spoons/Seal.spoon.zip](https://github.com/Hammerspoon/Spoons/raw/master/Spoons/Seal.spoon.zip)\n\nSeal includes a number of plugins, which you can choose to load (see `:loadPlugins()` below):\n * apps : Launch applications by name\n * calc : Simple calculator\n * rot13 : Apply ROT13 substitution cipher\n * safari_bookmarks : Open Safari bookmarks (this is broken since at least High Sierra)\n * screencapture : Lets you take screenshots in various ways\n * urlformats : User defined URL formats to open\n * useractions : User defined custom actions\n * vpn : Connect and disconnect VPNs (currently supports Viscosity and macOS system preferences)A",
-    "submodules": [
+    "submodules" : [
       "plugins"
     ],
-    "type": "Module"
+    "Function" : [
+
+    ],
+    "Variable" : [
+
+    ],
+    "stripped_doc" : [
+
+    ],
+    "Deprecated" : [
+
+    ],
+    "type" : "Module",
+    "desc" : "Pluggable launch bar",
+    "Constructor" : [
+
+    ],
+    "doc" : "Pluggable launch bar\n\nDownload: [https:\/\/github.com\/Hammerspoon\/Spoons\/raw\/master\/Spoons\/Seal.spoon.zip](https:\/\/github.com\/Hammerspoon\/Spoons\/raw\/master\/Spoons\/Seal.spoon.zip)\n\nSeal includes a number of plugins, which you can choose to load (see `:loadPlugins()` below):\n * apps : Launch applications by name\n * calc : Simple calculator\n * rot13 : Apply ROT13 substitution cipher\n * safari_bookmarks : Open Safari bookmarks (this is broken since at least High Sierra)\n * screencapture : Lets you take screenshots in various ways\n * urlformats : User defined URL formats to open\n * useractions : User defined custom actions\n * vpn : Connect and disconnect VPNs (currently supports Viscosity and macOS system preferences)A",
+    "Method" : [
+
+    ],
+    "Field" : [
+
+    ],
+    "Command" : [
+
+    ],
+    "items" : [
+
+    ],
+    "name" : "Seal"
   },
   {
-    "Command": [],
-    "Constant": [],
-    "Constructor": [],
-    "Deprecated": [],
-    "Field": [],
-    "Function": [],
-    "Method": [],
-    "Variable": [],
-    "desc": "Various APIs for Seal plugins",
-    "doc": "Various APIs for Seal plugins",
-    "items": [],
-    "name": "Seal.plugins",
-    "stripped_doc": "",
-    "submodules": [
+    "Constant" : [
+
+    ],
+    "submodules" : [
+      "plugins"
+    ],
+    "Function" : [
+
+    ],
+    "Variable" : [
+      {
+        "doc" : "List of directories where Seal will look for plugins. Defaults to `~\/.hammerspoon\/seal_plugins\/` and the Seal Spoon directory.",
+        "stripped_doc" : [
+          "List of directories where Seal will look for plugins. Defaults to `~\/.hammerspoon\/seal_plugins\/` and the Seal Spoon directory."
+        ],
+        "desc" : "List of directories where Seal will look for plugins. Defaults to `~\/.hammerspoon\/seal_plugins\/` and the Seal Spoon directory.",
+        "def" : "Seal.plugin_search_paths",
+        "notes" : [
+
+        ],
+        "signature" : "Seal.plugin_search_paths",
+        "type" : "Variable",
+        "returns" : [
+
+        ],
+        "name" : "plugin_search_paths",
+        "parameters" : [
+
+        ]
+      },
+      {
+        "doc" : "List of directories where Seal will look for plugins. Defaults to `~\/.hammerspoon\/seal_plugins\/` and the Seal Spoon directory.",
+        "stripped_doc" : [
+          "List of directories where Seal will look for plugins. Defaults to `~\/.hammerspoon\/seal_plugins\/` and the Seal Spoon directory."
+        ],
+        "desc" : "List of directories where Seal will look for plugins. Defaults to `~\/.hammerspoon\/seal_plugins\/` and the Seal Spoon directory.",
+        "def" : "Seal.plugin_search_paths",
+        "notes" : [
+
+        ],
+        "signature" : "Seal.plugin_search_paths",
+        "type" : "Variable",
+        "returns" : [
+
+        ],
+        "name" : "plugin_search_paths",
+        "parameters" : [
+
+        ]
+      }
+    ],
+    "stripped_doc" : [
+
+    ],
+    "Deprecated" : [
+
+    ],
+    "type" : "Module",
+    "desc" : "Pluggable launch bar",
+    "Constructor" : [
+
+    ],
+    "doc" : "Pluggable launch bar\n\nDownload: [https:\/\/github.com\/Hammerspoon\/Spoons\/raw\/master\/Spoons\/Seal.spoon.zip](https:\/\/github.com\/Hammerspoon\/Spoons\/raw\/master\/Spoons\/Seal.spoon.zip)",
+    "Method" : [
+      {
+        "doc" : "Refresh the list of commands provided by the given plugin.\n\nParameters:\n * plugin_name - the name of the plugin. Should be the name as passed to `loadPlugins()` or `loadPluginFromFile`.\n\nReturns:\n * The Seal object\n\nNotes:\n * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands.",
+        "stripped_doc" : [
+          "Refresh the list of commands provided by the given plugin.",
+          ""
+        ],
+        "desc" : "Refresh the list of commands provided by the given plugin.",
+        "def" : "Seal:refreshCommandsForPlugin(plugin_name)",
+        "notes" : [
+          " * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands."
+        ],
+        "signature" : "Seal:refreshCommandsForPlugin(plugin_name)",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object",
+          ""
+        ],
+        "name" : "refreshCommandsForPlugin",
+        "parameters" : [
+          " * plugin_name - the name of the plugin. Should be the name as passed to `loadPlugins()` or `loadPluginFromFile`.",
+          ""
+        ]
+      },
+      {
+        "doc" : "Refresh the list of commands provided by all the currently loaded plugins.\n\nParameters:\n * None\n\nReturns:\n * The Seal object\n\nNotes:\n * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands.",
+        "stripped_doc" : [
+          "Refresh the list of commands provided by all the currently loaded plugins.",
+          ""
+        ],
+        "desc" : "Refresh the list of commands provided by all the currently loaded plugins.",
+        "def" : "Seal:refreshAllCommands()",
+        "notes" : [
+          " * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands."
+        ],
+        "signature" : "Seal:refreshAllCommands()",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object",
+          ""
+        ],
+        "name" : "refreshAllCommands",
+        "parameters" : [
+          " * None",
+          ""
+        ]
+      },
+      {
+        "doc" : "Loads a plugin from a given file\n\nParameters:\n * plugin_name - the name of the plugin, without \"seal_\" at the beginning or \".lua\" at the end\n * file - the file where the plugin code is stored.\n\nReturns:\n * The Seal object if the plugin was successfully loaded, `nil` otherwise\n\nNotes:\n * You should normally use `Seal:loadPlugins()`. This method allows you to load plugins\n   from non-standard locations and is mostly a development interface.\n * Some plugins may immediately begin doing background work (e.g. Spotlight searches)",
+        "stripped_doc" : [
+          "Loads a plugin from a given file",
+          ""
+        ],
+        "desc" : "Loads a plugin from a given file",
+        "def" : "Seal:loadPluginFromFile(plugin_name, file)",
+        "notes" : [
+          " * You should normally use `Seal:loadPlugins()`. This method allows you to load plugins",
+          "   from non-standard locations and is mostly a development interface.",
+          " * Some plugins may immediately begin doing background work (e.g. Spotlight searches)"
+        ],
+        "signature" : "Seal:loadPluginFromFile(plugin_name, file)",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object if the plugin was successfully loaded, `nil` otherwise",
+          ""
+        ],
+        "name" : "loadPluginFromFile",
+        "parameters" : [
+          " * plugin_name - the name of the plugin, without \"seal_\" at the beginning or \".lua\" at the end",
+          " * file - the file where the plugin code is stored.",
+          ""
+        ]
+      },
+      {
+        "doc" : "Loads a list of Seal plugins\n\nParameters:\n * plugins - A list containing the names of plugins to load\n\nReturns:\n * The Seal object\n\nNotes:\n * The plugins live inside the Seal.spoon directory\n * The plugin names in the list, should not have `seal_` at the start, or `.lua` at the end\n * Some plugins may immediately begin doing background work (e.g. Spotlight searches)",
+        "stripped_doc" : [
+          "Loads a list of Seal plugins",
+          ""
+        ],
+        "desc" : "Loads a list of Seal plugins",
+        "def" : "Seal:loadPlugins(plugins)",
+        "notes" : [
+          " * The plugins live inside the Seal.spoon directory",
+          " * The plugin names in the list, should not have `seal_` at the start, or `.lua` at the end",
+          " * Some plugins may immediately begin doing background work (e.g. Spotlight searches)"
+        ],
+        "signature" : "Seal:loadPlugins(plugins)",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object",
+          ""
+        ],
+        "name" : "loadPlugins",
+        "parameters" : [
+          " * plugins - A list containing the names of plugins to load",
+          ""
+        ]
+      },
+      {
+        "doc" : "Binds hotkeys for Seal\n\nParameters:\n * mapping - A table containing hotkey modifier\/key details for the following (optional) items:\n  * show - This will cause Seal's UI to be shown\n  * toggle - This will cause Seal's UI to be shown or hidden depending on its current state\n\nReturns:\n * The Seal object",
+        "stripped_doc" : [
+          "Binds hotkeys for Seal",
+          ""
+        ],
+        "desc" : "Binds hotkeys for Seal",
+        "def" : "Seal:bindHotkeys(mapping)",
+        "notes" : [
+
+        ],
+        "signature" : "Seal:bindHotkeys(mapping)",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object"
+        ],
+        "name" : "bindHotkeys",
+        "parameters" : [
+          " * mapping - A table containing hotkey modifier\/key details for the following (optional) items:",
+          "  * show - This will cause Seal's UI to be shown",
+          "  * toggle - This will cause Seal's UI to be shown or hidden depending on its current state",
+          ""
+        ]
+      },
+      {
+        "doc" : "Starts Seal\n\nParameters:\n * None\n\nReturns:\n * The Seal object",
+        "stripped_doc" : [
+          "Starts Seal",
+          ""
+        ],
+        "desc" : "Starts Seal",
+        "def" : "Seal:start()",
+        "notes" : [
+
+        ],
+        "signature" : "Seal:start()",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object"
+        ],
+        "name" : "start",
+        "parameters" : [
+          " * None",
+          ""
+        ]
+      },
+      {
+        "doc" : "Stops Seal\n\nParameters:\n * None\n\nReturns:\n * The Seal object\n\nNotes:\n * Some Seal plugins will continue performing background work even after this call (e.g. Spotlight searches)",
+        "stripped_doc" : [
+          "Stops Seal",
+          ""
+        ],
+        "desc" : "Stops Seal",
+        "def" : "Seal:stop()",
+        "notes" : [
+          " * Some Seal plugins will continue performing background work even after this call (e.g. Spotlight searches)"
+        ],
+        "signature" : "Seal:stop()",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object",
+          ""
+        ],
+        "name" : "stop",
+        "parameters" : [
+          " * None",
+          ""
+        ]
+      },
+      {
+        "doc" : "Shows the Seal UI\n\nParameters:\n * query - An optional string to pre-populate the query box with\n\nReturns:\n * None\n\nNotes:\n * This may be useful if you wish to show Seal in response to something other than its hotkey",
+        "stripped_doc" : [
+          "Shows the Seal UI",
+          ""
+        ],
+        "desc" : "Shows the Seal UI",
+        "def" : "Seal:show(query)",
+        "notes" : [
+          " * This may be useful if you wish to show Seal in response to something other than its hotkey"
+        ],
+        "signature" : "Seal:show(query)",
+        "type" : "Method",
+        "returns" : [
+          " * None",
+          ""
+        ],
+        "name" : "show",
+        "parameters" : [
+          " * query - An optional string to pre-populate the query box with",
+          ""
+        ]
+      },
+      {
+        "doc" : "Shows or hides the Seal UI\n\nParameters:\n * query - An optional string to pre-populate the query box with\n\nReturns:\n * None",
+        "stripped_doc" : [
+          "Shows or hides the Seal UI",
+          ""
+        ],
+        "desc" : "Shows or hides the Seal UI",
+        "def" : "Seal:toggle(query)",
+        "notes" : [
+
+        ],
+        "signature" : "Seal:toggle(query)",
+        "type" : "Method",
+        "returns" : [
+          " * None"
+        ],
+        "name" : "toggle",
+        "parameters" : [
+          " * query - An optional string to pre-populate the query box with",
+          ""
+        ]
+      },
+      {
+        "doc" : "Refresh the list of commands provided by the given plugin.\n\nParameters:\n * plugin_name - the name of the plugin. Should be the name as passed to `loadPlugins()` or `loadPluginFromFile`.\n\nReturns:\n * The Seal object\n\nNotes:\n * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands.",
+        "stripped_doc" : [
+          "Refresh the list of commands provided by the given plugin.",
+          ""
+        ],
+        "desc" : "Refresh the list of commands provided by the given plugin.",
+        "def" : "Seal:refreshCommandsForPlugin(plugin_name)",
+        "notes" : [
+          " * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands."
+        ],
+        "signature" : "Seal:refreshCommandsForPlugin(plugin_name)",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object",
+          ""
+        ],
+        "name" : "refreshCommandsForPlugin",
+        "parameters" : [
+          " * plugin_name - the name of the plugin. Should be the name as passed to `loadPlugins()` or `loadPluginFromFile`.",
+          ""
+        ]
+      },
+      {
+        "doc" : "Refresh the list of commands provided by all the currently loaded plugins.\n\nParameters:\n * None\n\nReturns:\n * The Seal object\n\nNotes:\n * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands.",
+        "stripped_doc" : [
+          "Refresh the list of commands provided by all the currently loaded plugins.",
+          ""
+        ],
+        "desc" : "Refresh the list of commands provided by all the currently loaded plugins.",
+        "def" : "Seal:refreshAllCommands()",
+        "notes" : [
+          " * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands."
+        ],
+        "signature" : "Seal:refreshAllCommands()",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object",
+          ""
+        ],
+        "name" : "refreshAllCommands",
+        "parameters" : [
+          " * None",
+          ""
+        ]
+      },
+      {
+        "doc" : "Loads a plugin from a given file\n\nParameters:\n * plugin_name - the name of the plugin, without \"seal_\" at the beginning or \".lua\" at the end\n * file - the file where the plugin code is stored.\n\nReturns:\n * The Seal object if the plugin was successfully loaded, `nil` otherwise\n\nNotes:\n * You should normally use `Seal:loadPlugins()`. This method allows you to load plugins\n   from non-standard locations and is mostly a development interface.\n * Some plugins may immediately begin doing background work (e.g. Spotlight searches)",
+        "stripped_doc" : [
+          "Loads a plugin from a given file",
+          ""
+        ],
+        "desc" : "Loads a plugin from a given file",
+        "def" : "Seal:loadPluginFromFile(plugin_name, file)",
+        "notes" : [
+          " * You should normally use `Seal:loadPlugins()`. This method allows you to load plugins",
+          "   from non-standard locations and is mostly a development interface.",
+          " * Some plugins may immediately begin doing background work (e.g. Spotlight searches)"
+        ],
+        "signature" : "Seal:loadPluginFromFile(plugin_name, file)",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object if the plugin was successfully loaded, `nil` otherwise",
+          ""
+        ],
+        "name" : "loadPluginFromFile",
+        "parameters" : [
+          " * plugin_name - the name of the plugin, without \"seal_\" at the beginning or \".lua\" at the end",
+          " * file - the file where the plugin code is stored.",
+          ""
+        ]
+      },
+      {
+        "doc" : "Loads a list of Seal plugins\n\nParameters:\n * plugins - A list containing the names of plugins to load\n\nReturns:\n * The Seal object\n\nNotes:\n * The plugins live inside the Seal.spoon directory\n * The plugin names in the list, should not have `seal_` at the start, or `.lua` at the end\n * Some plugins may immediately begin doing background work (e.g. Spotlight searches)",
+        "stripped_doc" : [
+          "Loads a list of Seal plugins",
+          ""
+        ],
+        "desc" : "Loads a list of Seal plugins",
+        "def" : "Seal:loadPlugins(plugins)",
+        "notes" : [
+          " * The plugins live inside the Seal.spoon directory",
+          " * The plugin names in the list, should not have `seal_` at the start, or `.lua` at the end",
+          " * Some plugins may immediately begin doing background work (e.g. Spotlight searches)"
+        ],
+        "signature" : "Seal:loadPlugins(plugins)",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object",
+          ""
+        ],
+        "name" : "loadPlugins",
+        "parameters" : [
+          " * plugins - A list containing the names of plugins to load",
+          ""
+        ]
+      },
+      {
+        "doc" : "Binds hotkeys for Seal\n\nParameters:\n * mapping - A table containing hotkey modifier\/key details for the following (optional) items:\n  * show - This will cause Seal's UI to be shown\n  * toggle - This will cause Seal's UI to be shown or hidden depending on its current state\n\nReturns:\n * The Seal object",
+        "stripped_doc" : [
+          "Binds hotkeys for Seal",
+          ""
+        ],
+        "desc" : "Binds hotkeys for Seal",
+        "def" : "Seal:bindHotkeys(mapping)",
+        "notes" : [
+
+        ],
+        "signature" : "Seal:bindHotkeys(mapping)",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object"
+        ],
+        "name" : "bindHotkeys",
+        "parameters" : [
+          " * mapping - A table containing hotkey modifier\/key details for the following (optional) items:",
+          "  * show - This will cause Seal's UI to be shown",
+          "  * toggle - This will cause Seal's UI to be shown or hidden depending on its current state",
+          ""
+        ]
+      },
+      {
+        "doc" : "Starts Seal\n\nParameters:\n * None\n\nReturns:\n * The Seal object",
+        "stripped_doc" : [
+          "Starts Seal",
+          ""
+        ],
+        "desc" : "Starts Seal",
+        "def" : "Seal:start()",
+        "notes" : [
+
+        ],
+        "signature" : "Seal:start()",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object"
+        ],
+        "name" : "start",
+        "parameters" : [
+          " * None",
+          ""
+        ]
+      },
+      {
+        "doc" : "Stops Seal\n\nParameters:\n * None\n\nReturns:\n * The Seal object\n\nNotes:\n * Some Seal plugins will continue performing background work even after this call (e.g. Spotlight searches)",
+        "stripped_doc" : [
+          "Stops Seal",
+          ""
+        ],
+        "desc" : "Stops Seal",
+        "def" : "Seal:stop()",
+        "notes" : [
+          " * Some Seal plugins will continue performing background work even after this call (e.g. Spotlight searches)"
+        ],
+        "signature" : "Seal:stop()",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object",
+          ""
+        ],
+        "name" : "stop",
+        "parameters" : [
+          " * None",
+          ""
+        ]
+      },
+      {
+        "doc" : "Shows the Seal UI\n\nParameters:\n * None\n\nReturns:\n * None\n\nNotes:\n * This may be useful if you wish to show Seal in response to something other than its hotkey",
+        "stripped_doc" : [
+          "Shows the Seal UI",
+          ""
+        ],
+        "desc" : "Shows the Seal UI",
+        "def" : "Seal:show()",
+        "notes" : [
+          " * This may be useful if you wish to show Seal in response to something other than its hotkey"
+        ],
+        "signature" : "Seal:show()",
+        "type" : "Method",
+        "returns" : [
+          " * None",
+          ""
+        ],
+        "name" : "show",
+        "parameters" : [
+          " * None",
+          ""
+        ]
+      },
+      {
+        "doc" : "Shows or hides the Seal UI\n\nParameters:\n * None\n\nReturns:\n * None",
+        "stripped_doc" : [
+          "Shows or hides the Seal UI",
+          ""
+        ],
+        "desc" : "Shows or hides the Seal UI",
+        "def" : "Seal:toggle()",
+        "notes" : [
+
+        ],
+        "signature" : "Seal:toggle()",
+        "type" : "Method",
+        "returns" : [
+          " * None"
+        ],
+        "name" : "toggle",
+        "parameters" : [
+          " * None",
+          ""
+        ]
+      }
+    ],
+    "Field" : [
+
+    ],
+    "Command" : [
+
+    ],
+    "items" : [
+      {
+        "doc" : "List of directories where Seal will look for plugins. Defaults to `~\/.hammerspoon\/seal_plugins\/` and the Seal Spoon directory.",
+        "stripped_doc" : [
+          "List of directories where Seal will look for plugins. Defaults to `~\/.hammerspoon\/seal_plugins\/` and the Seal Spoon directory."
+        ],
+        "desc" : "List of directories where Seal will look for plugins. Defaults to `~\/.hammerspoon\/seal_plugins\/` and the Seal Spoon directory.",
+        "def" : "Seal.plugin_search_paths",
+        "notes" : [
+
+        ],
+        "signature" : "Seal.plugin_search_paths",
+        "type" : "Variable",
+        "returns" : [
+
+        ],
+        "name" : "plugin_search_paths",
+        "parameters" : [
+
+        ]
+      },
+      {
+        "doc" : "List of directories where Seal will look for plugins. Defaults to `~\/.hammerspoon\/seal_plugins\/` and the Seal Spoon directory.",
+        "stripped_doc" : [
+          "List of directories where Seal will look for plugins. Defaults to `~\/.hammerspoon\/seal_plugins\/` and the Seal Spoon directory."
+        ],
+        "desc" : "List of directories where Seal will look for plugins. Defaults to `~\/.hammerspoon\/seal_plugins\/` and the Seal Spoon directory.",
+        "def" : "Seal.plugin_search_paths",
+        "notes" : [
+
+        ],
+        "signature" : "Seal.plugin_search_paths",
+        "type" : "Variable",
+        "returns" : [
+
+        ],
+        "name" : "plugin_search_paths",
+        "parameters" : [
+
+        ]
+      },
+      {
+        "doc" : "Binds hotkeys for Seal\n\nParameters:\n * mapping - A table containing hotkey modifier\/key details for the following (optional) items:\n  * show - This will cause Seal's UI to be shown\n  * toggle - This will cause Seal's UI to be shown or hidden depending on its current state\n\nReturns:\n * The Seal object",
+        "stripped_doc" : [
+          "Binds hotkeys for Seal",
+          ""
+        ],
+        "desc" : "Binds hotkeys for Seal",
+        "def" : "Seal:bindHotkeys(mapping)",
+        "notes" : [
+
+        ],
+        "signature" : "Seal:bindHotkeys(mapping)",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object"
+        ],
+        "name" : "bindHotkeys",
+        "parameters" : [
+          " * mapping - A table containing hotkey modifier\/key details for the following (optional) items:",
+          "  * show - This will cause Seal's UI to be shown",
+          "  * toggle - This will cause Seal's UI to be shown or hidden depending on its current state",
+          ""
+        ]
+      },
+      {
+        "doc" : "Binds hotkeys for Seal\n\nParameters:\n * mapping - A table containing hotkey modifier\/key details for the following (optional) items:\n  * show - This will cause Seal's UI to be shown\n  * toggle - This will cause Seal's UI to be shown or hidden depending on its current state\n\nReturns:\n * The Seal object",
+        "stripped_doc" : [
+          "Binds hotkeys for Seal",
+          ""
+        ],
+        "desc" : "Binds hotkeys for Seal",
+        "def" : "Seal:bindHotkeys(mapping)",
+        "notes" : [
+
+        ],
+        "signature" : "Seal:bindHotkeys(mapping)",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object"
+        ],
+        "name" : "bindHotkeys",
+        "parameters" : [
+          " * mapping - A table containing hotkey modifier\/key details for the following (optional) items:",
+          "  * show - This will cause Seal's UI to be shown",
+          "  * toggle - This will cause Seal's UI to be shown or hidden depending on its current state",
+          ""
+        ]
+      },
+      {
+        "doc" : "Loads a plugin from a given file\n\nParameters:\n * plugin_name - the name of the plugin, without \"seal_\" at the beginning or \".lua\" at the end\n * file - the file where the plugin code is stored.\n\nReturns:\n * The Seal object if the plugin was successfully loaded, `nil` otherwise\n\nNotes:\n * You should normally use `Seal:loadPlugins()`. This method allows you to load plugins\n   from non-standard locations and is mostly a development interface.\n * Some plugins may immediately begin doing background work (e.g. Spotlight searches)",
+        "stripped_doc" : [
+          "Loads a plugin from a given file",
+          ""
+        ],
+        "desc" : "Loads a plugin from a given file",
+        "def" : "Seal:loadPluginFromFile(plugin_name, file)",
+        "notes" : [
+          " * You should normally use `Seal:loadPlugins()`. This method allows you to load plugins",
+          "   from non-standard locations and is mostly a development interface.",
+          " * Some plugins may immediately begin doing background work (e.g. Spotlight searches)"
+        ],
+        "signature" : "Seal:loadPluginFromFile(plugin_name, file)",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object if the plugin was successfully loaded, `nil` otherwise",
+          ""
+        ],
+        "name" : "loadPluginFromFile",
+        "parameters" : [
+          " * plugin_name - the name of the plugin, without \"seal_\" at the beginning or \".lua\" at the end",
+          " * file - the file where the plugin code is stored.",
+          ""
+        ]
+      },
+      {
+        "doc" : "Loads a plugin from a given file\n\nParameters:\n * plugin_name - the name of the plugin, without \"seal_\" at the beginning or \".lua\" at the end\n * file - the file where the plugin code is stored.\n\nReturns:\n * The Seal object if the plugin was successfully loaded, `nil` otherwise\n\nNotes:\n * You should normally use `Seal:loadPlugins()`. This method allows you to load plugins\n   from non-standard locations and is mostly a development interface.\n * Some plugins may immediately begin doing background work (e.g. Spotlight searches)",
+        "stripped_doc" : [
+          "Loads a plugin from a given file",
+          ""
+        ],
+        "desc" : "Loads a plugin from a given file",
+        "def" : "Seal:loadPluginFromFile(plugin_name, file)",
+        "notes" : [
+          " * You should normally use `Seal:loadPlugins()`. This method allows you to load plugins",
+          "   from non-standard locations and is mostly a development interface.",
+          " * Some plugins may immediately begin doing background work (e.g. Spotlight searches)"
+        ],
+        "signature" : "Seal:loadPluginFromFile(plugin_name, file)",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object if the plugin was successfully loaded, `nil` otherwise",
+          ""
+        ],
+        "name" : "loadPluginFromFile",
+        "parameters" : [
+          " * plugin_name - the name of the plugin, without \"seal_\" at the beginning or \".lua\" at the end",
+          " * file - the file where the plugin code is stored.",
+          ""
+        ]
+      },
+      {
+        "doc" : "Loads a list of Seal plugins\n\nParameters:\n * plugins - A list containing the names of plugins to load\n\nReturns:\n * The Seal object\n\nNotes:\n * The plugins live inside the Seal.spoon directory\n * The plugin names in the list, should not have `seal_` at the start, or `.lua` at the end\n * Some plugins may immediately begin doing background work (e.g. Spotlight searches)",
+        "stripped_doc" : [
+          "Loads a list of Seal plugins",
+          ""
+        ],
+        "desc" : "Loads a list of Seal plugins",
+        "def" : "Seal:loadPlugins(plugins)",
+        "notes" : [
+          " * The plugins live inside the Seal.spoon directory",
+          " * The plugin names in the list, should not have `seal_` at the start, or `.lua` at the end",
+          " * Some plugins may immediately begin doing background work (e.g. Spotlight searches)"
+        ],
+        "signature" : "Seal:loadPlugins(plugins)",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object",
+          ""
+        ],
+        "name" : "loadPlugins",
+        "parameters" : [
+          " * plugins - A list containing the names of plugins to load",
+          ""
+        ]
+      },
+      {
+        "doc" : "Loads a list of Seal plugins\n\nParameters:\n * plugins - A list containing the names of plugins to load\n\nReturns:\n * The Seal object\n\nNotes:\n * The plugins live inside the Seal.spoon directory\n * The plugin names in the list, should not have `seal_` at the start, or `.lua` at the end\n * Some plugins may immediately begin doing background work (e.g. Spotlight searches)",
+        "stripped_doc" : [
+          "Loads a list of Seal plugins",
+          ""
+        ],
+        "desc" : "Loads a list of Seal plugins",
+        "def" : "Seal:loadPlugins(plugins)",
+        "notes" : [
+          " * The plugins live inside the Seal.spoon directory",
+          " * The plugin names in the list, should not have `seal_` at the start, or `.lua` at the end",
+          " * Some plugins may immediately begin doing background work (e.g. Spotlight searches)"
+        ],
+        "signature" : "Seal:loadPlugins(plugins)",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object",
+          ""
+        ],
+        "name" : "loadPlugins",
+        "parameters" : [
+          " * plugins - A list containing the names of plugins to load",
+          ""
+        ]
+      },
+      {
+        "doc" : "Refresh the list of commands provided by all the currently loaded plugins.\n\nParameters:\n * None\n\nReturns:\n * The Seal object\n\nNotes:\n * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands.",
+        "stripped_doc" : [
+          "Refresh the list of commands provided by all the currently loaded plugins.",
+          ""
+        ],
+        "desc" : "Refresh the list of commands provided by all the currently loaded plugins.",
+        "def" : "Seal:refreshAllCommands()",
+        "notes" : [
+          " * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands."
+        ],
+        "signature" : "Seal:refreshAllCommands()",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object",
+          ""
+        ],
+        "name" : "refreshAllCommands",
+        "parameters" : [
+          " * None",
+          ""
+        ]
+      },
+      {
+        "doc" : "Refresh the list of commands provided by all the currently loaded plugins.\n\nParameters:\n * None\n\nReturns:\n * The Seal object\n\nNotes:\n * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands.",
+        "stripped_doc" : [
+          "Refresh the list of commands provided by all the currently loaded plugins.",
+          ""
+        ],
+        "desc" : "Refresh the list of commands provided by all the currently loaded plugins.",
+        "def" : "Seal:refreshAllCommands()",
+        "notes" : [
+          " * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands."
+        ],
+        "signature" : "Seal:refreshAllCommands()",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object",
+          ""
+        ],
+        "name" : "refreshAllCommands",
+        "parameters" : [
+          " * None",
+          ""
+        ]
+      },
+      {
+        "doc" : "Refresh the list of commands provided by the given plugin.\n\nParameters:\n * plugin_name - the name of the plugin. Should be the name as passed to `loadPlugins()` or `loadPluginFromFile`.\n\nReturns:\n * The Seal object\n\nNotes:\n * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands.",
+        "stripped_doc" : [
+          "Refresh the list of commands provided by the given plugin.",
+          ""
+        ],
+        "desc" : "Refresh the list of commands provided by the given plugin.",
+        "def" : "Seal:refreshCommandsForPlugin(plugin_name)",
+        "notes" : [
+          " * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands."
+        ],
+        "signature" : "Seal:refreshCommandsForPlugin(plugin_name)",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object",
+          ""
+        ],
+        "name" : "refreshCommandsForPlugin",
+        "parameters" : [
+          " * plugin_name - the name of the plugin. Should be the name as passed to `loadPlugins()` or `loadPluginFromFile`.",
+          ""
+        ]
+      },
+      {
+        "doc" : "Refresh the list of commands provided by the given plugin.\n\nParameters:\n * plugin_name - the name of the plugin. Should be the name as passed to `loadPlugins()` or `loadPluginFromFile`.\n\nReturns:\n * The Seal object\n\nNotes:\n * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands.",
+        "stripped_doc" : [
+          "Refresh the list of commands provided by the given plugin.",
+          ""
+        ],
+        "desc" : "Refresh the list of commands provided by the given plugin.",
+        "def" : "Seal:refreshCommandsForPlugin(plugin_name)",
+        "notes" : [
+          " * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands."
+        ],
+        "signature" : "Seal:refreshCommandsForPlugin(plugin_name)",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object",
+          ""
+        ],
+        "name" : "refreshCommandsForPlugin",
+        "parameters" : [
+          " * plugin_name - the name of the plugin. Should be the name as passed to `loadPlugins()` or `loadPluginFromFile`.",
+          ""
+        ]
+      },
+      {
+        "doc" : "Shows the Seal UI\n\nParameters:\n * query - An optional string to pre-populate the query box with\n\nReturns:\n * None\n\nNotes:\n * This may be useful if you wish to show Seal in response to something other than its hotkey",
+        "stripped_doc" : [
+          "Shows the Seal UI",
+          ""
+        ],
+        "desc" : "Shows the Seal UI",
+        "def" : "Seal:show(query)",
+        "notes" : [
+          " * This may be useful if you wish to show Seal in response to something other than its hotkey"
+        ],
+        "signature" : "Seal:show(query)",
+        "type" : "Method",
+        "returns" : [
+          " * None",
+          ""
+        ],
+        "name" : "show",
+        "parameters" : [
+          " * query - An optional string to pre-populate the query box with",
+          ""
+        ]
+      },
+      {
+        "doc" : "Shows the Seal UI\n\nParameters:\n * None\n\nReturns:\n * None\n\nNotes:\n * This may be useful if you wish to show Seal in response to something other than its hotkey",
+        "stripped_doc" : [
+          "Shows the Seal UI",
+          ""
+        ],
+        "desc" : "Shows the Seal UI",
+        "def" : "Seal:show()",
+        "notes" : [
+          " * This may be useful if you wish to show Seal in response to something other than its hotkey"
+        ],
+        "signature" : "Seal:show()",
+        "type" : "Method",
+        "returns" : [
+          " * None",
+          ""
+        ],
+        "name" : "show",
+        "parameters" : [
+          " * None",
+          ""
+        ]
+      },
+      {
+        "doc" : "Starts Seal\n\nParameters:\n * None\n\nReturns:\n * The Seal object",
+        "stripped_doc" : [
+          "Starts Seal",
+          ""
+        ],
+        "desc" : "Starts Seal",
+        "def" : "Seal:start()",
+        "notes" : [
+
+        ],
+        "signature" : "Seal:start()",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object"
+        ],
+        "name" : "start",
+        "parameters" : [
+          " * None",
+          ""
+        ]
+      },
+      {
+        "doc" : "Starts Seal\n\nParameters:\n * None\n\nReturns:\n * The Seal object",
+        "stripped_doc" : [
+          "Starts Seal",
+          ""
+        ],
+        "desc" : "Starts Seal",
+        "def" : "Seal:start()",
+        "notes" : [
+
+        ],
+        "signature" : "Seal:start()",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object"
+        ],
+        "name" : "start",
+        "parameters" : [
+          " * None",
+          ""
+        ]
+      },
+      {
+        "doc" : "Stops Seal\n\nParameters:\n * None\n\nReturns:\n * The Seal object\n\nNotes:\n * Some Seal plugins will continue performing background work even after this call (e.g. Spotlight searches)",
+        "stripped_doc" : [
+          "Stops Seal",
+          ""
+        ],
+        "desc" : "Stops Seal",
+        "def" : "Seal:stop()",
+        "notes" : [
+          " * Some Seal plugins will continue performing background work even after this call (e.g. Spotlight searches)"
+        ],
+        "signature" : "Seal:stop()",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object",
+          ""
+        ],
+        "name" : "stop",
+        "parameters" : [
+          " * None",
+          ""
+        ]
+      },
+      {
+        "doc" : "Stops Seal\n\nParameters:\n * None\n\nReturns:\n * The Seal object\n\nNotes:\n * Some Seal plugins will continue performing background work even after this call (e.g. Spotlight searches)",
+        "stripped_doc" : [
+          "Stops Seal",
+          ""
+        ],
+        "desc" : "Stops Seal",
+        "def" : "Seal:stop()",
+        "notes" : [
+          " * Some Seal plugins will continue performing background work even after this call (e.g. Spotlight searches)"
+        ],
+        "signature" : "Seal:stop()",
+        "type" : "Method",
+        "returns" : [
+          " * The Seal object",
+          ""
+        ],
+        "name" : "stop",
+        "parameters" : [
+          " * None",
+          ""
+        ]
+      },
+      {
+        "doc" : "Shows or hides the Seal UI\n\nParameters:\n * query - An optional string to pre-populate the query box with\n\nReturns:\n * None",
+        "stripped_doc" : [
+          "Shows or hides the Seal UI",
+          ""
+        ],
+        "desc" : "Shows or hides the Seal UI",
+        "def" : "Seal:toggle(query)",
+        "notes" : [
+
+        ],
+        "signature" : "Seal:toggle(query)",
+        "type" : "Method",
+        "returns" : [
+          " * None"
+        ],
+        "name" : "toggle",
+        "parameters" : [
+          " * query - An optional string to pre-populate the query box with",
+          ""
+        ]
+      },
+      {
+        "doc" : "Shows or hides the Seal UI\n\nParameters:\n * None\n\nReturns:\n * None",
+        "stripped_doc" : [
+          "Shows or hides the Seal UI",
+          ""
+        ],
+        "desc" : "Shows or hides the Seal UI",
+        "def" : "Seal:toggle()",
+        "notes" : [
+
+        ],
+        "signature" : "Seal:toggle()",
+        "type" : "Method",
+        "returns" : [
+          " * None"
+        ],
+        "name" : "toggle",
+        "parameters" : [
+          " * None",
+          ""
+        ]
+      }
+    ],
+    "name" : "Seal"
+  },
+  {
+    "Constant" : [
+
+    ],
+    "submodules" : [
       "pasteboard",
       "safari_bookmarks",
       "screencapture",
       "urlformats",
       "useractions"
     ],
-    "type": "Module"
+    "Function" : [
+
+    ],
+    "Variable" : [
+
+    ],
+    "stripped_doc" : [
+
+    ],
+    "Deprecated" : [
+
+    ],
+    "type" : "Module",
+    "desc" : "Various APIs for Seal plugins",
+    "Constructor" : [
+
+    ],
+    "doc" : "Various APIs for Seal plugins",
+    "Method" : [
+
+    ],
+    "Field" : [
+
+    ],
+    "Command" : [
+
+    ],
+    "items" : [
+
+    ],
+    "name" : "Seal.plugins"
   },
   {
-    "Command": [],
-    "Constant": [],
-    "Constructor": [],
-    "Deprecated": [],
-    "Field": [],
-    "Function": [],
-    "Method": [],
-    "Variable": [
+    "Constant" : [
+
+    ],
+    "submodules" : [
+
+    ],
+    "Function" : [
+
+    ],
+    "Variable" : [
       {
-        "def": "Seal.plugins.pasteboard.historySize",
-        "desc": "",
-        "doc": "\nThe number of history items to keep. Defaults to 50",
-        "name": "historySize",
-        "signature": "Seal.plugins.pasteboard.historySize",
-        "stripped_doc": "The number of history items to keep. Defaults to 50",
-        "type": "Variable"
+        "doc" : "The number of history items to keep. Defaults to 50",
+        "stripped_doc" : [
+          "The number of history items to keep. Defaults to 50"
+        ],
+        "desc" : "",
+        "def" : "Seal.plugins.pasteboard.historySize",
+        "notes" : [
+
+        ],
+        "signature" : "Seal.plugins.pasteboard.historySize",
+        "type" : "Variable",
+        "returns" : [
+
+        ],
+        "name" : "historySize",
+        "parameters" : [
+
+        ]
       },
       {
-        "def": "Seal.plugins.pasteboard.saveHistory",
-        "desc": "",
-        "doc": "\nA boolean, true if Seal should automatically load/save clipboard history. Defaults to true",
-        "name": "saveHistory",
-        "signature": "Seal.plugins.pasteboard.saveHistory",
-        "stripped_doc": "A boolean, true if Seal should automatically load/save clipboard history. Defaults to true",
-        "type": "Variable"
+        "doc" : "A boolean, true if Seal should automatically load\/save clipboard history. Defaults to true",
+        "stripped_doc" : [
+          "A boolean, true if Seal should automatically load\/save clipboard history. Defaults to true"
+        ],
+        "desc" : "",
+        "def" : "Seal.plugins.pasteboard.saveHistory",
+        "notes" : [
+
+        ],
+        "signature" : "Seal.plugins.pasteboard.saveHistory",
+        "type" : "Variable",
+        "returns" : [
+
+        ],
+        "name" : "saveHistory",
+        "parameters" : [
+
+        ]
       }
     ],
-    "desc": "Visual pasteboard (ie clipboard) history",
-    "doc": "Visual pasteboard (ie clipboard) history",
-    "items": [
+    "stripped_doc" : [
+
+    ],
+    "Deprecated" : [
+
+    ],
+    "type" : "Module",
+    "desc" : "Visual pasteboard (ie clipboard) history",
+    "Constructor" : [
+
+    ],
+    "doc" : "Visual pasteboard (ie clipboard) history",
+    "Method" : [
+
+    ],
+    "Field" : [
+
+    ],
+    "Command" : [
+
+    ],
+    "items" : [
       {
-        "def": "Seal.plugins.pasteboard.historySize",
-        "desc": "",
-        "doc": "\nThe number of history items to keep. Defaults to 50",
-        "name": "historySize",
-        "signature": "Seal.plugins.pasteboard.historySize",
-        "stripped_doc": "The number of history items to keep. Defaults to 50",
-        "type": "Variable"
+        "doc" : "The number of history items to keep. Defaults to 50",
+        "stripped_doc" : [
+          "The number of history items to keep. Defaults to 50"
+        ],
+        "desc" : "",
+        "def" : "Seal.plugins.pasteboard.historySize",
+        "notes" : [
+
+        ],
+        "signature" : "Seal.plugins.pasteboard.historySize",
+        "type" : "Variable",
+        "returns" : [
+
+        ],
+        "name" : "historySize",
+        "parameters" : [
+
+        ]
       },
       {
-        "def": "Seal.plugins.pasteboard.saveHistory",
-        "desc": "",
-        "doc": "\nA boolean, true if Seal should automatically load/save clipboard history. Defaults to true",
-        "name": "saveHistory",
-        "signature": "Seal.plugins.pasteboard.saveHistory",
-        "stripped_doc": "A boolean, true if Seal should automatically load/save clipboard history. Defaults to true",
-        "type": "Variable"
+        "doc" : "A boolean, true if Seal should automatically load\/save clipboard history. Defaults to true",
+        "stripped_doc" : [
+          "A boolean, true if Seal should automatically load\/save clipboard history. Defaults to true"
+        ],
+        "desc" : "",
+        "def" : "Seal.plugins.pasteboard.saveHistory",
+        "notes" : [
+
+        ],
+        "signature" : "Seal.plugins.pasteboard.saveHistory",
+        "type" : "Variable",
+        "returns" : [
+
+        ],
+        "name" : "saveHistory",
+        "parameters" : [
+
+        ]
       }
     ],
-    "name": "Seal.plugins.pasteboard",
-    "stripped_doc": "",
-    "submodules": [],
-    "type": "Module"
+    "name" : "Seal.plugins.pasteboard"
   },
   {
-    "Command": [],
-    "Constant": [],
-    "Constructor": [],
-    "Deprecated": [],
-    "Field": [],
-    "Function": [],
-    "Method": [],
-    "Variable": [
+    "Constant" : [
+
+    ],
+    "submodules" : [
+
+    ],
+    "Function" : [
+
+    ],
+    "Variable" : [
       {
-        "def": "Seal.plugins.safari_bookmarks.always_open_with_safari",
-        "desc": "If `true` (default), bookmarks are always opened with Safari, otherwise they are opened with the default application using the `/usr/bin/open` command.",
-        "doc": "If `true` (default), bookmarks are always opened with Safari, otherwise they are opened with the default application using the `/usr/bin/open` command.",
-        "name": "always_open_with_safari",
-        "signature": "Seal.plugins.safari_bookmarks.always_open_with_safari",
-        "stripped_doc": "",
-        "type": "Variable"
+        "doc" : "If `true` (default), bookmarks are always opened with Safari, otherwise they are opened with the default application using the `\/usr\/bin\/open` command.",
+        "stripped_doc" : [
+          "If `true` (default), bookmarks are always opened with Safari, otherwise they are opened with the default application using the `\/usr\/bin\/open` command."
+        ],
+        "desc" : "If `true` (default), bookmarks are always opened with Safari, otherwise they are opened with the default application using the `\/usr\/bin\/open` command.",
+        "def" : "Seal.plugins.safari_bookmarks.always_open_with_safari",
+        "notes" : [
+
+        ],
+        "signature" : "Seal.plugins.safari_bookmarks.always_open_with_safari",
+        "type" : "Variable",
+        "returns" : [
+
+        ],
+        "name" : "always_open_with_safari",
+        "parameters" : [
+
+        ]
       }
     ],
-    "desc": "",
-    "doc": "\nNote: Apple has changed the way Safari stores bookmarks and this plugin no longer works on recent macOS releases.",
-    "items": [
+    "stripped_doc" : [
+
+    ],
+    "Deprecated" : [
+
+    ],
+    "type" : "Module",
+    "desc" : "",
+    "Constructor" : [
+
+    ],
+    "doc" : "Access Safari bookmarks from Seal\n\nNote: Apple has changed the way Safari stores bookmarks and this plugin no longer works on recent macOS releases.",
+    "Method" : [
+
+    ],
+    "Field" : [
+
+    ],
+    "Command" : [
+
+    ],
+    "items" : [
       {
-        "def": "Seal.plugins.safari_bookmarks.always_open_with_safari",
-        "desc": "If `true` (default), bookmarks are always opened with Safari, otherwise they are opened with the default application using the `/usr/bin/open` command.",
-        "doc": "If `true` (default), bookmarks are always opened with Safari, otherwise they are opened with the default application using the `/usr/bin/open` command.",
-        "name": "always_open_with_safari",
-        "signature": "Seal.plugins.safari_bookmarks.always_open_with_safari",
-        "stripped_doc": "",
-        "type": "Variable"
+        "doc" : "If `true` (default), bookmarks are always opened with Safari, otherwise they are opened with the default application using the `\/usr\/bin\/open` command.",
+        "stripped_doc" : [
+          "If `true` (default), bookmarks are always opened with Safari, otherwise they are opened with the default application using the `\/usr\/bin\/open` command."
+        ],
+        "desc" : "If `true` (default), bookmarks are always opened with Safari, otherwise they are opened with the default application using the `\/usr\/bin\/open` command.",
+        "def" : "Seal.plugins.safari_bookmarks.always_open_with_safari",
+        "notes" : [
+
+        ],
+        "signature" : "Seal.plugins.safari_bookmarks.always_open_with_safari",
+        "type" : "Variable",
+        "returns" : [
+
+        ],
+        "name" : "always_open_with_safari",
+        "parameters" : [
+
+        ]
       }
     ],
-    "name": "Seal.plugins.safari_bookmarks",
-    "stripped_doc": "Note: Apple has changed the way Safari stores bookmarks and this plugin no longer works on recent macOS releases.",
-    "submodules": [],
-    "type": "Module"
+    "name" : "Seal.plugins.safari_bookmarks"
   },
   {
-    "Command": [],
-    "Constant": [],
-    "Constructor": [],
-    "Deprecated": [],
-    "Field": [],
-    "Function": [],
-    "Method": [],
-    "Variable": [
+    "Constant" : [
+
+    ],
+    "submodules" : [
+
+    ],
+    "Function" : [
+
+    ],
+    "Variable" : [
       {
-        "def": "Seal.plugins.screencapture.showPostUI",
-        "desc": "Whether or not to show the screen capture UI in macOS 10.14 or later",
-        "doc": "Whether or not to show the screen capture UI in macOS 10.14 or later",
-        "name": "showPostUI",
-        "signature": "Seal.plugins.screencapture.showPostUI",
-        "stripped_doc": "",
-        "type": "Variable"
+        "doc" : "Whether or not to show the screen capture UI in macOS 10.14 or later",
+        "stripped_doc" : [
+          "Whether or not to show the screen capture UI in macOS 10.14 or later"
+        ],
+        "desc" : "Whether or not to show the screen capture UI in macOS 10.14 or later",
+        "def" : "Seal.plugins.screencapture.showPostUI",
+        "notes" : [
+
+        ],
+        "signature" : "Seal.plugins.screencapture.showPostUI",
+        "type" : "Variable",
+        "returns" : [
+
+        ],
+        "name" : "showPostUI",
+        "parameters" : [
+
+        ]
       }
     ],
-    "desc": "A plugin to capture the screen in various ways",
-    "doc": "A plugin to capture the screen in various ways",
-    "items": [
+    "stripped_doc" : [
+
+    ],
+    "Deprecated" : [
+
+    ],
+    "type" : "Module",
+    "desc" : "A plugin to capture the screen in various ways",
+    "Constructor" : [
+
+    ],
+    "doc" : "A plugin to capture the screen in various ways",
+    "Method" : [
+
+    ],
+    "Field" : [
+
+    ],
+    "Command" : [
+
+    ],
+    "items" : [
       {
-        "def": "Seal.plugins.screencapture.showPostUI",
-        "desc": "Whether or not to show the screen capture UI in macOS 10.14 or later",
-        "doc": "Whether or not to show the screen capture UI in macOS 10.14 or later",
-        "name": "showPostUI",
-        "signature": "Seal.plugins.screencapture.showPostUI",
-        "stripped_doc": "",
-        "type": "Variable"
+        "doc" : "Whether or not to show the screen capture UI in macOS 10.14 or later",
+        "stripped_doc" : [
+          "Whether or not to show the screen capture UI in macOS 10.14 or later"
+        ],
+        "desc" : "Whether or not to show the screen capture UI in macOS 10.14 or later",
+        "def" : "Seal.plugins.screencapture.showPostUI",
+        "notes" : [
+
+        ],
+        "signature" : "Seal.plugins.screencapture.showPostUI",
+        "type" : "Variable",
+        "returns" : [
+
+        ],
+        "name" : "showPostUI",
+        "parameters" : [
+
+        ]
       }
     ],
-    "name": "Seal.plugins.screencapture",
-    "stripped_doc": "",
-    "submodules": [],
-    "type": "Module"
+    "name" : "Seal.plugins.screencapture"
   },
   {
-    "Command": [],
-    "Constant": [],
-    "Constructor": [],
-    "Deprecated": [],
-    "Field": [],
-    "Function": [],
-    "Method": [
+    "Constant" : [
+
+    ],
+    "submodules" : [
+
+    ],
+    "Function" : [
+
+    ],
+    "Variable" : [
+
+    ],
+    "stripped_doc" : [
+
+    ],
+    "Deprecated" : [
+
+    ],
+    "type" : "Module",
+    "desc" : "A plugin to quickly open URLs containing a search\/query term",
+    "Constructor" : [
+
+    ],
+    "doc" : "A plugin to quickly open URLs containing a search\/query term\nThis plugin is invoked with the `uf` keyword and requires some configuration, see `:providersTable()`\n\nThe way this works is by defining a set of providers, each of which contains a URL with a `%s` somewhere insert it.\nWhen the user types `uf` in Seal, followed by some more characters, those characters will be inserted into the string at the point where the `%s` is.\n\nBy way of an example, you could define a provider with a url like `http:\/\/bugs.mycorp.com\/showBug?id=%s`, and just need to type `uf 123456` in Seal to get a quick shortcut to open the full URL.",
+    "Method" : [
       {
-        "def": "Seal.plugins.urlformats:providersTable(aTable)",
-        "desc": "Gets or sets the current providers table",
-        "doc": "Gets or sets the current providers table\n\nParameters:\n * aTable - An optional table of providers, which must contain the following keys:\n   * name - A string naming the provider, which will be shown in the Seal results\n   * url - A string containing the URL to insert the user's query into. This should contain one and only one `%s`\n\nReturns:\n * Either a table of current providers, if no parameter was passed, or nothing if a parmameter was passed.\n\nNotes:\n * An example table might look like:\n```lua\n{\n  rhbz = { name = \"Red Hat Bugzilla\", url = \"https://bugzilla.redhat.com/show_bug.cgi?id=%s\", },\n  lp = { name = \"Launchpad Bug\", url = \"https://launchpad.net/bugs/%s\", },\n}\n```",
-        "name": "providersTable",
-        "notes": [
+        "doc" : "Gets or sets the current providers table\n\nParameters:\n * aTable - An optional table of providers, which must contain the following keys:\n   * name - A string naming the provider, which will be shown in the Seal results\n   * url - A string containing the URL to insert the user's query into. This should contain one and only one `%s`\n\nReturns:\n * Either a table of current providers, if no parameter was passed, or nothing if a parmameter was passed.\n\nNotes:\n * An example table might look like:\n```lua\n{\n  rhbz = { name = \"Red Hat Bugzilla\", url = \"https:\/\/bugzilla.redhat.com\/show_bug.cgi?id=%s\", },\n  lp = { name = \"Launchpad Bug\", url = \"https:\/\/launchpad.net\/bugs\/%s\", },\n}\n```",
+        "stripped_doc" : [
+          "Gets or sets the current providers table",
+          ""
+        ],
+        "desc" : "Gets or sets the current providers table",
+        "def" : "Seal.plugins.urlformats:providersTable(aTable)",
+        "notes" : [
           " * An example table might look like:",
           "```lua",
           "{",
-          "  rhbz = { name = \"Red Hat Bugzilla\", url = \"https://bugzilla.redhat.com/show_bug.cgi?id=%s\", },",
-          "  lp = { name = \"Launchpad Bug\", url = \"https://launchpad.net/bugs/%s\", },",
+          "  rhbz = { name = \"Red Hat Bugzilla\", url = \"https:\/\/bugzilla.redhat.com\/show_bug.cgi?id=%s\", },",
+          "  lp = { name = \"Launchpad Bug\", url = \"https:\/\/launchpad.net\/bugs\/%s\", },",
           "}",
           "```"
         ],
-        "parameters": [
+        "signature" : "Seal.plugins.urlformats:providersTable(aTable)",
+        "type" : "Method",
+        "returns" : [
+          " * Either a table of current providers, if no parameter was passed, or nothing if a parmameter was passed.",
+          ""
+        ],
+        "name" : "providersTable",
+        "parameters" : [
           " * aTable - An optional table of providers, which must contain the following keys:",
           "   * name - A string naming the provider, which will be shown in the Seal results",
-          "   * url - A string containing the URL to insert the user's query into. This should contain one and only one `%s`"
-        ],
-        "returns": [
-          " * Either a table of current providers, if no parameter was passed, or nothing if a parmameter was passed."
-        ],
-        "signature": "Seal.plugins.urlformats:providersTable(aTable)",
-        "stripped_doc": "",
-        "type": "Method"
+          "   * url - A string containing the URL to insert the user's query into. This should contain one and only one `%s`",
+          ""
+        ]
       }
     ],
-    "Variable": [],
-    "desc": "A plugin to quickly open URLs containing a search/query term",
-    "doc": "A plugin to quickly open URLs containing a search/query term\nThis plugin is invoked with the `uf` keyword and requires some configuration, see `:providersTable()`\n\nThe way this works is by defining a set of providers, each of which contains a URL with a `%s` somewhere insert it.\nWhen the user types `uf` in Seal, followed by some more characters, those characters will be inserted into the string at the point where the `%s` is.\n\nBy way of an example, you could define a provider with a url like `http://bugs.mycorp.com/showBug?id=%s`, and just need to type `uf 123456` in Seal to get a quick shortcut to open the full URL.",
-    "items": [
+    "Field" : [
+
+    ],
+    "Command" : [
+
+    ],
+    "items" : [
       {
-        "def": "Seal.plugins.urlformats:providersTable(aTable)",
-        "desc": "Gets or sets the current providers table",
-        "doc": "Gets or sets the current providers table\n\nParameters:\n * aTable - An optional table of providers, which must contain the following keys:\n   * name - A string naming the provider, which will be shown in the Seal results\n   * url - A string containing the URL to insert the user's query into. This should contain one and only one `%s`\n\nReturns:\n * Either a table of current providers, if no parameter was passed, or nothing if a parmameter was passed.\n\nNotes:\n * An example table might look like:\n```lua\n{\n  rhbz = { name = \"Red Hat Bugzilla\", url = \"https://bugzilla.redhat.com/show_bug.cgi?id=%s\", },\n  lp = { name = \"Launchpad Bug\", url = \"https://launchpad.net/bugs/%s\", },\n}\n```",
-        "name": "providersTable",
-        "notes": [
+        "doc" : "Gets or sets the current providers table\n\nParameters:\n * aTable - An optional table of providers, which must contain the following keys:\n   * name - A string naming the provider, which will be shown in the Seal results\n   * url - A string containing the URL to insert the user's query into. This should contain one and only one `%s`\n\nReturns:\n * Either a table of current providers, if no parameter was passed, or nothing if a parmameter was passed.\n\nNotes:\n * An example table might look like:\n```lua\n{\n  rhbz = { name = \"Red Hat Bugzilla\", url = \"https:\/\/bugzilla.redhat.com\/show_bug.cgi?id=%s\", },\n  lp = { name = \"Launchpad Bug\", url = \"https:\/\/launchpad.net\/bugs\/%s\", },\n}\n```",
+        "stripped_doc" : [
+          "Gets or sets the current providers table",
+          ""
+        ],
+        "desc" : "Gets or sets the current providers table",
+        "def" : "Seal.plugins.urlformats:providersTable(aTable)",
+        "notes" : [
           " * An example table might look like:",
           "```lua",
           "{",
-          "  rhbz = { name = \"Red Hat Bugzilla\", url = \"https://bugzilla.redhat.com/show_bug.cgi?id=%s\", },",
-          "  lp = { name = \"Launchpad Bug\", url = \"https://launchpad.net/bugs/%s\", },",
+          "  rhbz = { name = \"Red Hat Bugzilla\", url = \"https:\/\/bugzilla.redhat.com\/show_bug.cgi?id=%s\", },",
+          "  lp = { name = \"Launchpad Bug\", url = \"https:\/\/launchpad.net\/bugs\/%s\", },",
           "}",
           "```"
         ],
-        "parameters": [
+        "signature" : "Seal.plugins.urlformats:providersTable(aTable)",
+        "type" : "Method",
+        "returns" : [
+          " * Either a table of current providers, if no parameter was passed, or nothing if a parmameter was passed.",
+          ""
+        ],
+        "name" : "providersTable",
+        "parameters" : [
           " * aTable - An optional table of providers, which must contain the following keys:",
           "   * name - A string naming the provider, which will be shown in the Seal results",
-          "   * url - A string containing the URL to insert the user's query into. This should contain one and only one `%s`"
-        ],
-        "returns": [
-          " * Either a table of current providers, if no parameter was passed, or nothing if a parmameter was passed."
-        ],
-        "signature": "Seal.plugins.urlformats:providersTable(aTable)",
-        "stripped_doc": "",
-        "type": "Method"
+          "   * url - A string containing the URL to insert the user's query into. This should contain one and only one `%s`",
+          ""
+        ]
       }
     ],
-    "name": "Seal.plugins.urlformats",
-    "stripped_doc": "This plugin is invoked with the `uf` keyword and requires some configuration, see `:providersTable()`\n\nThe way this works is by defining a set of providers, each of which contains a URL with a `%s` somewhere insert it.\nWhen the user types `uf` in Seal, followed by some more characters, those characters will be inserted into the string at the point where the `%s` is.\n\nBy way of an example, you could define a provider with a url like `http://bugs.mycorp.com/showBug?id=%s`, and just need to type `uf 123456` in Seal to get a quick shortcut to open the full URL.",
-    "submodules": [],
-    "type": "Module"
+    "name" : "Seal.plugins.urlformats"
   },
   {
-    "Command": [],
-    "Constant": [],
-    "Constructor": [],
-    "Deprecated": [],
-    "Field": [],
-    "Function": [],
-    "Method": [],
-    "Variable": [
+    "Constant" : [
+
+    ],
+    "submodules" : [
+
+    ],
+    "Function" : [
+
+    ],
+    "Variable" : [
       {
-        "def": "Seal.plugins.useractions.actions",
-        "desc": "",
-        "doc": "\nA table containing the definitions of static user-defined actions. Each entry is indexed by the name of the entry as it will be shown in the chooser. Its value is a table which can have the following keys (one of `fn` or `url` is required. If both are provided, `url` is ignored):\n * fn - A function which will be called when the entry is selected. The function receives no arguments.\n * url - A URL which will be opened when the entry is selected. Can also be non-HTTP URLs, such as `mailto:` or other app-specific URLs.\n * icon - (optional) An `hs.image` object that will be shown next to the entry in the chooser. If not provided, `Seal.plugins.useractions.default_icon` is used. For `url` bookmarks, it can be set to `\"favicon\"` to fetch and use the website's favicon.\n * keyword - (optional) A command by which this action will be invoked, effectively turning it into a Seal command. Any arguments passed to the command will be handled as follows:\n   * For `fn` actions, passed as an argument to the function\n   * For `url` actions, substituted into the URL, taking the place of any occurrences of `${query}`.\n * hotkey - (optional) A hotkey specification in the form `{ modifiers, key }` by which this action can be invoked.\n\nExample configuration:\n```\nspoon.Seal:loadPlugins({\"useractions\"})\nspoon.Seal.plugins.useractions.actions =\n   {\n      [\"Hammerspoon docs webpage\"] = {\n         url = \"http://hammerspoon.org/docs/\",\n         icon = hs.image.imageFromName(hs.image.systemImageNames.ApplicationIcon),\n         hotkey = { hyper, \"h\" }\n      },\n      [\"Leave corpnet\"] = {\n         fn = function()\n            spoon.WiFiTransitions:processTransition('foo', 'corpnet01')\n         end,\n      },\n      [\"Arrive in corpnet\"] = {\n         fn = function()\n            spoon.WiFiTransitions:processTransition('corpnet01', 'foo')\n         end,\n      },\n      [\"Translate using Leo\"] = {\n         url = \"http://dict.leo.org/ende/index_de.html#/search=${query}\",\n         icon = 'favicon',\n         keyword = \"leo\",\n      },\n      [\"Tell me something\"] = {\n         keyword = \"tellme\",\n         fn = function(str) hs.alert.show(str) end,\n      }\n```",
-        "name": "actions",
-        "signature": "Seal.plugins.useractions.actions",
-        "stripped_doc": "A table containing the definitions of static user-defined actions. Each entry is indexed by the name of the entry as it will be shown in the chooser. Its value is a table which can have the following keys (one of `fn` or `url` is required. If both are provided, `url` is ignored):\n * fn - A function which will be called when the entry is selected. The function receives no arguments.\n * url - A URL which will be opened when the entry is selected. Can also be non-HTTP URLs, such as `mailto:` or other app-specific URLs.\n * icon - (optional) An `hs.image` object that will be shown next to the entry in the chooser. If not provided, `Seal.plugins.useractions.default_icon` is used. For `url` bookmarks, it can be set to `\"favicon\"` to fetch and use the website's favicon.\n * keyword - (optional) A command by which this action will be invoked, effectively turning it into a Seal command. Any arguments passed to the command will be handled as follows:\n   * For `fn` actions, passed as an argument to the function\n   * For `url` actions, substituted into the URL, taking the place of any occurrences of `${query}`.\n * hotkey - (optional) A hotkey specification in the form `{ modifiers, key }` by which this action can be invoked.\nExample configuration:\n```\nspoon.Seal:loadPlugins({\"useractions\"})\nspoon.Seal.plugins.useractions.actions =\n   {\n      [\"Hammerspoon docs webpage\"] = {\n         url = \"http://hammerspoon.org/docs/\",\n         icon = hs.image.imageFromName(hs.image.systemImageNames.ApplicationIcon),\n         hotkey = { hyper, \"h\" }\n      },\n      [\"Leave corpnet\"] = {\n         fn = function()\n            spoon.WiFiTransitions:processTransition('foo', 'corpnet01')\n         end,\n      },\n      [\"Arrive in corpnet\"] = {\n         fn = function()\n            spoon.WiFiTransitions:processTransition('corpnet01', 'foo')\n         end,\n      },\n      [\"Translate using Leo\"] = {\n         url = \"http://dict.leo.org/ende/index_de.html#/search=${query}\",\n         icon = 'favicon',\n         keyword = \"leo\",\n      },\n      [\"Tell me something\"] = {\n         keyword = \"tellme\",\n         fn = function(str) hs.alert.show(str) end,\n      }\n```",
-        "type": "Variable"
+        "doc" : "A table containing the definitions of static user-defined actions. Each entry is indexed by the name of the entry as it will be shown in the chooser. Its value is a table which can have the following keys (one of `fn` or `url` is required. If both are provided, `url` is ignored):\n * fn - A function which will be called when the entry is selected. The function receives no arguments.\n * url - A URL which will be opened when the entry is selected. Can also be non-HTTP URLs, such as `mailto:` or other app-specific URLs.\n * icon - (optional) An `hs.image` object that will be shown next to the entry in the chooser. If not provided, `Seal.plugins.useractions.default_icon` is used. For `url` bookmarks, it can be set to `\"favicon\"` to fetch and use the website's favicon.\n * keyword - (optional) A command by which this action will be invoked, effectively turning it into a Seal command. Any arguments passed to the command will be handled as follows:\n   * For `fn` actions, passed as an argument to the function\n   * For `url` actions, substituted into the URL, taking the place of any occurrences of `${query}`.\n * hotkey - (optional) A hotkey specification in the form `{ modifiers, key }` by which this action can be invoked.\n\nExample configuration:\n```\nspoon.Seal:loadPlugins({\"useractions\"})\nspoon.Seal.plugins.useractions.actions =\n   {\n      [\"Hammerspoon docs webpage\"] = {\n         url = \"http:\/\/hammerspoon.org\/docs\/\",\n         icon = hs.image.imageFromName(hs.image.systemImageNames.ApplicationIcon),\n         hotkey = { hyper, \"h\" }\n      },\n      [\"Leave corpnet\"] = {\n         fn = function()\n            spoon.WiFiTransitions:processTransition('foo', 'corpnet01')\n         end,\n      },\n      [\"Arrive in corpnet\"] = {\n         fn = function()\n            spoon.WiFiTransitions:processTransition('corpnet01', 'foo')\n         end,\n      },\n      [\"Translate using Leo\"] = {\n         url = \"http:\/\/dict.leo.org\/ende\/index_de.html#\/search=${query}\",\n         icon = 'favicon',\n         keyword = \"leo\",\n      },\n      [\"Tell me something\"] = {\n         keyword = \"tellme\",\n         fn = function(str) hs.alert.show(str) end,\n      }\n```",
+        "stripped_doc" : [
+          "A table containing the definitions of static user-defined actions. Each entry is indexed by the name of the entry as it will be shown in the chooser. Its value is a table which can have the following keys (one of `fn` or `url` is required. If both are provided, `url` is ignored):",
+          " * fn - A function which will be called when the entry is selected. The function receives no arguments.",
+          " * url - A URL which will be opened when the entry is selected. Can also be non-HTTP URLs, such as `mailto:` or other app-specific URLs.",
+          " * icon - (optional) An `hs.image` object that will be shown next to the entry in the chooser. If not provided, `Seal.plugins.useractions.default_icon` is used. For `url` bookmarks, it can be set to `\"favicon\"` to fetch and use the website's favicon.",
+          " * keyword - (optional) A command by which this action will be invoked, effectively turning it into a Seal command. Any arguments passed to the command will be handled as follows:",
+          "   * For `fn` actions, passed as an argument to the function",
+          "   * For `url` actions, substituted into the URL, taking the place of any occurrences of `${query}`.",
+          " * hotkey - (optional) A hotkey specification in the form `{ modifiers, key }` by which this action can be invoked.",
+          "",
+          "Example configuration:",
+          "```",
+          "spoon.Seal:loadPlugins({\"useractions\"})",
+          "spoon.Seal.plugins.useractions.actions =",
+          "   {",
+          "      [\"Hammerspoon docs webpage\"] = {",
+          "         url = \"http:\/\/hammerspoon.org\/docs\/\",",
+          "         icon = hs.image.imageFromName(hs.image.systemImageNames.ApplicationIcon),",
+          "         hotkey = { hyper, \"h\" }",
+          "      },",
+          "      [\"Leave corpnet\"] = {",
+          "         fn = function()",
+          "            spoon.WiFiTransitions:processTransition('foo', 'corpnet01')",
+          "         end,",
+          "      },",
+          "      [\"Arrive in corpnet\"] = {",
+          "         fn = function()",
+          "            spoon.WiFiTransitions:processTransition('corpnet01', 'foo')",
+          "         end,",
+          "      },",
+          "      [\"Translate using Leo\"] = {",
+          "         url = \"http:\/\/dict.leo.org\/ende\/index_de.html#\/search=${query}\",",
+          "         icon = 'favicon',",
+          "         keyword = \"leo\",",
+          "      },",
+          "      [\"Tell me something\"] = {",
+          "         keyword = \"tellme\",",
+          "         fn = function(str) hs.alert.show(str) end,",
+          "      }",
+          "```"
+        ],
+        "desc" : "",
+        "def" : "Seal.plugins.useractions.actions",
+        "notes" : [
+
+        ],
+        "signature" : "Seal.plugins.useractions.actions",
+        "type" : "Variable",
+        "returns" : [
+
+        ],
+        "name" : "actions",
+        "parameters" : [
+
+        ]
       },
       {
-        "def": "Seal.plugins.useractions.get_favicon",
-        "desc": "",
-        "doc": "\nIf `true`, attempt to obtain the favicon for URLs added through the `add` command, and use it in the chooser. Defaults to `true`",
-        "name": "get_favicon",
-        "signature": "Seal.plugins.useractions.get_favicon",
-        "stripped_doc": "If `true`, attempt to obtain the favicon for URLs added through the `add` command, and use it in the chooser. Defaults to `true`",
-        "type": "Variable"
+        "doc" : "If `true`, attempt to obtain the favicon for URLs added through the `add` command, and use it in the chooser. Defaults to `true`",
+        "stripped_doc" : [
+          "If `true`, attempt to obtain the favicon for URLs added through the `add` command, and use it in the chooser. Defaults to `true`"
+        ],
+        "desc" : "",
+        "def" : "Seal.plugins.useractions.get_favicon",
+        "notes" : [
+
+        ],
+        "signature" : "Seal.plugins.useractions.get_favicon",
+        "type" : "Variable",
+        "returns" : [
+
+        ],
+        "name" : "get_favicon",
+        "parameters" : [
+
+        ]
       }
     ],
-    "desc": "Allow accessing user-defined bookmarks and arbitrary actions from Seal.",
-    "doc": "Allow accessing user-defined bookmarks and arbitrary actions from Seal.\n",
-    "items": [
+    "stripped_doc" : [
+
+    ],
+    "Deprecated" : [
+
+    ],
+    "type" : "Module",
+    "desc" : "Allow accessing user-defined bookmarks and arbitrary actions from Seal.",
+    "Constructor" : [
+
+    ],
+    "doc" : "Allow accessing user-defined bookmarks and arbitrary actions from Seal.",
+    "Method" : [
+
+    ],
+    "Field" : [
+
+    ],
+    "Command" : [
+
+    ],
+    "items" : [
       {
-        "def": "Seal.plugins.useractions.actions",
-        "desc": "",
-        "doc": "\nA table containing the definitions of static user-defined actions. Each entry is indexed by the name of the entry as it will be shown in the chooser. Its value is a table which can have the following keys (one of `fn` or `url` is required. If both are provided, `url` is ignored):\n * fn - A function which will be called when the entry is selected. The function receives no arguments.\n * url - A URL which will be opened when the entry is selected. Can also be non-HTTP URLs, such as `mailto:` or other app-specific URLs.\n * icon - (optional) An `hs.image` object that will be shown next to the entry in the chooser. If not provided, `Seal.plugins.useractions.default_icon` is used. For `url` bookmarks, it can be set to `\"favicon\"` to fetch and use the website's favicon.\n * keyword - (optional) A command by which this action will be invoked, effectively turning it into a Seal command. Any arguments passed to the command will be handled as follows:\n   * For `fn` actions, passed as an argument to the function\n   * For `url` actions, substituted into the URL, taking the place of any occurrences of `${query}`.\n * hotkey - (optional) A hotkey specification in the form `{ modifiers, key }` by which this action can be invoked.\n\nExample configuration:\n```\nspoon.Seal:loadPlugins({\"useractions\"})\nspoon.Seal.plugins.useractions.actions =\n   {\n      [\"Hammerspoon docs webpage\"] = {\n         url = \"http://hammerspoon.org/docs/\",\n         icon = hs.image.imageFromName(hs.image.systemImageNames.ApplicationIcon),\n         hotkey = { hyper, \"h\" }\n      },\n      [\"Leave corpnet\"] = {\n         fn = function()\n            spoon.WiFiTransitions:processTransition('foo', 'corpnet01')\n         end,\n      },\n      [\"Arrive in corpnet\"] = {\n         fn = function()\n            spoon.WiFiTransitions:processTransition('corpnet01', 'foo')\n         end,\n      },\n      [\"Translate using Leo\"] = {\n         url = \"http://dict.leo.org/ende/index_de.html#/search=${query}\",\n         icon = 'favicon',\n         keyword = \"leo\",\n      },\n      [\"Tell me something\"] = {\n         keyword = \"tellme\",\n         fn = function(str) hs.alert.show(str) end,\n      }\n```",
-        "name": "actions",
-        "signature": "Seal.plugins.useractions.actions",
-        "stripped_doc": "A table containing the definitions of static user-defined actions. Each entry is indexed by the name of the entry as it will be shown in the chooser. Its value is a table which can have the following keys (one of `fn` or `url` is required. If both are provided, `url` is ignored):\n * fn - A function which will be called when the entry is selected. The function receives no arguments.\n * url - A URL which will be opened when the entry is selected. Can also be non-HTTP URLs, such as `mailto:` or other app-specific URLs.\n * icon - (optional) An `hs.image` object that will be shown next to the entry in the chooser. If not provided, `Seal.plugins.useractions.default_icon` is used. For `url` bookmarks, it can be set to `\"favicon\"` to fetch and use the website's favicon.\n * keyword - (optional) A command by which this action will be invoked, effectively turning it into a Seal command. Any arguments passed to the command will be handled as follows:\n   * For `fn` actions, passed as an argument to the function\n   * For `url` actions, substituted into the URL, taking the place of any occurrences of `${query}`.\n * hotkey - (optional) A hotkey specification in the form `{ modifiers, key }` by which this action can be invoked.\nExample configuration:\n```\nspoon.Seal:loadPlugins({\"useractions\"})\nspoon.Seal.plugins.useractions.actions =\n   {\n      [\"Hammerspoon docs webpage\"] = {\n         url = \"http://hammerspoon.org/docs/\",\n         icon = hs.image.imageFromName(hs.image.systemImageNames.ApplicationIcon),\n         hotkey = { hyper, \"h\" }\n      },\n      [\"Leave corpnet\"] = {\n         fn = function()\n            spoon.WiFiTransitions:processTransition('foo', 'corpnet01')\n         end,\n      },\n      [\"Arrive in corpnet\"] = {\n         fn = function()\n            spoon.WiFiTransitions:processTransition('corpnet01', 'foo')\n         end,\n      },\n      [\"Translate using Leo\"] = {\n         url = \"http://dict.leo.org/ende/index_de.html#/search=${query}\",\n         icon = 'favicon',\n         keyword = \"leo\",\n      },\n      [\"Tell me something\"] = {\n         keyword = \"tellme\",\n         fn = function(str) hs.alert.show(str) end,\n      }\n```",
-        "type": "Variable"
+        "doc" : "A table containing the definitions of static user-defined actions. Each entry is indexed by the name of the entry as it will be shown in the chooser. Its value is a table which can have the following keys (one of `fn` or `url` is required. If both are provided, `url` is ignored):\n * fn - A function which will be called when the entry is selected. The function receives no arguments.\n * url - A URL which will be opened when the entry is selected. Can also be non-HTTP URLs, such as `mailto:` or other app-specific URLs.\n * icon - (optional) An `hs.image` object that will be shown next to the entry in the chooser. If not provided, `Seal.plugins.useractions.default_icon` is used. For `url` bookmarks, it can be set to `\"favicon\"` to fetch and use the website's favicon.\n * keyword - (optional) A command by which this action will be invoked, effectively turning it into a Seal command. Any arguments passed to the command will be handled as follows:\n   * For `fn` actions, passed as an argument to the function\n   * For `url` actions, substituted into the URL, taking the place of any occurrences of `${query}`.\n * hotkey - (optional) A hotkey specification in the form `{ modifiers, key }` by which this action can be invoked.\n\nExample configuration:\n```\nspoon.Seal:loadPlugins({\"useractions\"})\nspoon.Seal.plugins.useractions.actions =\n   {\n      [\"Hammerspoon docs webpage\"] = {\n         url = \"http:\/\/hammerspoon.org\/docs\/\",\n         icon = hs.image.imageFromName(hs.image.systemImageNames.ApplicationIcon),\n         hotkey = { hyper, \"h\" }\n      },\n      [\"Leave corpnet\"] = {\n         fn = function()\n            spoon.WiFiTransitions:processTransition('foo', 'corpnet01')\n         end,\n      },\n      [\"Arrive in corpnet\"] = {\n         fn = function()\n            spoon.WiFiTransitions:processTransition('corpnet01', 'foo')\n         end,\n      },\n      [\"Translate using Leo\"] = {\n         url = \"http:\/\/dict.leo.org\/ende\/index_de.html#\/search=${query}\",\n         icon = 'favicon',\n         keyword = \"leo\",\n      },\n      [\"Tell me something\"] = {\n         keyword = \"tellme\",\n         fn = function(str) hs.alert.show(str) end,\n      }\n```",
+        "stripped_doc" : [
+          "A table containing the definitions of static user-defined actions. Each entry is indexed by the name of the entry as it will be shown in the chooser. Its value is a table which can have the following keys (one of `fn` or `url` is required. If both are provided, `url` is ignored):",
+          " * fn - A function which will be called when the entry is selected. The function receives no arguments.",
+          " * url - A URL which will be opened when the entry is selected. Can also be non-HTTP URLs, such as `mailto:` or other app-specific URLs.",
+          " * icon - (optional) An `hs.image` object that will be shown next to the entry in the chooser. If not provided, `Seal.plugins.useractions.default_icon` is used. For `url` bookmarks, it can be set to `\"favicon\"` to fetch and use the website's favicon.",
+          " * keyword - (optional) A command by which this action will be invoked, effectively turning it into a Seal command. Any arguments passed to the command will be handled as follows:",
+          "   * For `fn` actions, passed as an argument to the function",
+          "   * For `url` actions, substituted into the URL, taking the place of any occurrences of `${query}`.",
+          " * hotkey - (optional) A hotkey specification in the form `{ modifiers, key }` by which this action can be invoked.",
+          "",
+          "Example configuration:",
+          "```",
+          "spoon.Seal:loadPlugins({\"useractions\"})",
+          "spoon.Seal.plugins.useractions.actions =",
+          "   {",
+          "      [\"Hammerspoon docs webpage\"] = {",
+          "         url = \"http:\/\/hammerspoon.org\/docs\/\",",
+          "         icon = hs.image.imageFromName(hs.image.systemImageNames.ApplicationIcon),",
+          "         hotkey = { hyper, \"h\" }",
+          "      },",
+          "      [\"Leave corpnet\"] = {",
+          "         fn = function()",
+          "            spoon.WiFiTransitions:processTransition('foo', 'corpnet01')",
+          "         end,",
+          "      },",
+          "      [\"Arrive in corpnet\"] = {",
+          "         fn = function()",
+          "            spoon.WiFiTransitions:processTransition('corpnet01', 'foo')",
+          "         end,",
+          "      },",
+          "      [\"Translate using Leo\"] = {",
+          "         url = \"http:\/\/dict.leo.org\/ende\/index_de.html#\/search=${query}\",",
+          "         icon = 'favicon',",
+          "         keyword = \"leo\",",
+          "      },",
+          "      [\"Tell me something\"] = {",
+          "         keyword = \"tellme\",",
+          "         fn = function(str) hs.alert.show(str) end,",
+          "      }",
+          "```"
+        ],
+        "desc" : "",
+        "def" : "Seal.plugins.useractions.actions",
+        "notes" : [
+
+        ],
+        "signature" : "Seal.plugins.useractions.actions",
+        "type" : "Variable",
+        "returns" : [
+
+        ],
+        "name" : "actions",
+        "parameters" : [
+
+        ]
       },
       {
-        "def": "Seal.plugins.useractions.get_favicon",
-        "desc": "",
-        "doc": "\nIf `true`, attempt to obtain the favicon for URLs added through the `add` command, and use it in the chooser. Defaults to `true`",
-        "name": "get_favicon",
-        "signature": "Seal.plugins.useractions.get_favicon",
-        "stripped_doc": "If `true`, attempt to obtain the favicon for URLs added through the `add` command, and use it in the chooser. Defaults to `true`",
-        "type": "Variable"
+        "doc" : "If `true`, attempt to obtain the favicon for URLs added through the `add` command, and use it in the chooser. Defaults to `true`",
+        "stripped_doc" : [
+          "If `true`, attempt to obtain the favicon for URLs added through the `add` command, and use it in the chooser. Defaults to `true`"
+        ],
+        "desc" : "",
+        "def" : "Seal.plugins.useractions.get_favicon",
+        "notes" : [
+
+        ],
+        "signature" : "Seal.plugins.useractions.get_favicon",
+        "type" : "Variable",
+        "returns" : [
+
+        ],
+        "name" : "get_favicon",
+        "parameters" : [
+
+        ]
       }
     ],
-    "name": "Seal.plugins.useractions",
-    "stripped_doc": "",
-    "submodules": [],
-    "type": "Module"
+    "name" : "Seal.plugins.useractions"
+  },
+  {
+    "Constant" : [
+
+    ],
+    "submodules" : [
+
+    ],
+    "Function" : [
+      {
+        "doc" : "Uses Levenshtein distance to find the edit distance between two strings.\nThe Levenshtein distance is the minimum number of insertions, deletions, and substitutions that are needed to turn one string into another. This function allows custom costs for insertions, substitutions, and deletions. (The default costs are 1.)\n\nParameters:\n* str1 (String)\n* str2 (String)\n* (Optional) addCost (Number) - The cost of inserting one character. Default is 1.\n* (Optional) subCost (Number) - The cost of substituting one character for another. Default is 1.\n* (Optional) delCost (Number) - The cost of deleting one character. Default is 1.\n\nReturns:\n* (Number) The edit distance between the two strings.",
+        "stripped_doc" : [
+          "Uses Levenshtein distance to find the edit distance between two strings.",
+          "The Levenshtein distance is the minimum number of insertions, deletions, and substitutions that are needed to turn one string into another. This function allows custom costs for insertions, substitutions, and deletions. (The default costs are 1.)",
+          ""
+        ],
+        "desc" : "Uses Levenshtein distance to find the edit distance between two strings.",
+        "def" : "hs.fuzzy.LevenshteinDistance(str1, str2[, addCost, subCost, delCost]) -> number",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.LevenshteinDistance(str1, str2[, addCost, subCost, delCost]) -> number",
+        "type" : "Function",
+        "returns" : [
+          "* (Number) The edit distance between the two strings."
+        ],
+        "name" : "LevenshteinDistance",
+        "parameters" : [
+          "* str1 (String)",
+          "* str2 (String)",
+          "* (Optional) addCost (Number) - The cost of inserting one character. Default is 1.",
+          "* (Optional) subCost (Number) - The cost of substituting one character for another. Default is 1.",
+          "* (Optional) delCost (Number) - The cost of deleting one character. Default is 1.",
+          ""
+        ]
+      },
+      {
+        "doc" : "Alias for `hs.fuzzy.LevenshteinDistance`.",
+        "stripped_doc" : [
+          "Alias for `hs.fuzzy.LevenshteinDistance`."
+        ],
+        "desc" : "Alias for `hs.fuzzy.LevenshteinDistance`.",
+        "def" : "hs.fuzzy.ld",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.ld",
+        "type" : "Function",
+        "returns" : [
+
+        ],
+        "name" : "ld",
+        "parameters" : [
+
+        ]
+      },
+      {
+        "doc" : "Finds the edit ratio between two strings using Levenshtein distance.\n\nParameters:\n* str1 (String) - The first string, and the string to use for the ratio.\n* str2 (String) - The second string.\n\nReturns:\n* (Number) The edit distance between the two strings divided by the length of the first string.",
+        "stripped_doc" : [
+          "Finds the edit ratio between two strings using Levenshtein distance.",
+          ""
+        ],
+        "desc" : "Finds the edit ratio between two strings using Levenshtein distance.",
+        "def" : "hs.fuzzy.LevenshteinRatio(str1, str2) -> number",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.LevenshteinRatio(str1, str2) -> number",
+        "type" : "Function",
+        "returns" : [
+          "* (Number) The edit distance between the two strings divided by the length of the first string."
+        ],
+        "name" : "LevenshteinRatio",
+        "parameters" : [
+          "* str1 (String) - The first string, and the string to use for the ratio.",
+          "* str2 (String) - The second string.",
+          ""
+        ]
+      },
+      {
+        "doc" : "Alias for `hs.fuzzy.LevenshteinRatio`.",
+        "stripped_doc" : [
+          "Alias for `hs.fuzzy.LevenshteinRatio`."
+        ],
+        "desc" : "Alias for `hs.fuzzy.LevenshteinRatio`.",
+        "def" : "hs.fuzzy.lr",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.lr",
+        "type" : "Function",
+        "returns" : [
+
+        ],
+        "name" : "lr",
+        "parameters" : [
+
+        ]
+      },
+      {
+        "doc" : "Uses the Damerau-Levenshtein distance to find the edit distance between two strings.\nThe Damerau-Levenshtein distance is the minimum number of insertions, substitutions, deletions, or transpositions that are neeed to turn one string into another. This function allows custom costs for additions, substitutions, deletions, and transpositions. (The default costs are 1.)\n\nParameters:\n* str1 (String)\n* str2 (String)\n* (Optional) addCost (Number) - The cost of inserting one character. Default is 1.\n* (Optional) subCost (Number) - The cost of substituting one character for another. Default is 1.\n* (Optional) delCost (Number) - The cost of deleting one character. Default is 1.\n* (Optional) trnCost (Number) - The cost of transposing two adjacent characters. Default is 1.\n\nReturns:\n* (Number) The edit distance between the two strings.",
+        "stripped_doc" : [
+          "Uses the Damerau-Levenshtein distance to find the edit distance between two strings.",
+          "The Damerau-Levenshtein distance is the minimum number of insertions, substitutions, deletions, or transpositions that are neeed to turn one string into another. This function allows custom costs for additions, substitutions, deletions, and transpositions. (The default costs are 1.)",
+          ""
+        ],
+        "desc" : "Uses the Damerau-Levenshtein distance to find the edit distance between two strings.",
+        "def" : "hs.fuzzy.DamerauLevenshteinDistance(str1, str2[, addCost, subCost, delCost, trnCost]) -> number",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.DamerauLevenshteinDistance(str1, str2[, addCost, subCost, delCost, trnCost]) -> number",
+        "type" : "Function",
+        "returns" : [
+          "* (Number) The edit distance between the two strings."
+        ],
+        "name" : "DamerauLevenshteinDistance",
+        "parameters" : [
+          "* str1 (String)",
+          "* str2 (String)",
+          "* (Optional) addCost (Number) - The cost of inserting one character. Default is 1.",
+          "* (Optional) subCost (Number) - The cost of substituting one character for another. Default is 1.",
+          "* (Optional) delCost (Number) - The cost of deleting one character. Default is 1.",
+          "* (Optional) trnCost (Number) - The cost of transposing two adjacent characters. Default is 1.",
+          ""
+        ]
+      },
+      {
+        "doc" : "Alias for `hs.fuzzy.DamerauLevenshteinDistance`.",
+        "stripped_doc" : [
+          "Alias for `hs.fuzzy.DamerauLevenshteinDistance`."
+        ],
+        "desc" : "Alias for `hs.fuzzy.DamerauLevenshteinDistance`.",
+        "def" : "hs.fuzzy.dld",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.dld",
+        "type" : "Function",
+        "returns" : [
+
+        ],
+        "name" : "dld",
+        "parameters" : [
+
+        ]
+      },
+      {
+        "doc" : "Finds the edit ratio between two strings using Demerau-Levenshtein distance.\n\nParameters:\n* str1 (String) - The first string, and the string to use for the ratio.\n* str2 (String) - The second string.\n\nReturns:\n* (Number) The edit distance between the two strings divided by the length of the first string.",
+        "stripped_doc" : [
+          "Finds the edit ratio between two strings using Demerau-Levenshtein distance.",
+          ""
+        ],
+        "desc" : "Finds the edit ratio between two strings using Demerau-Levenshtein distance.",
+        "def" : "hs.fuzzy.DamerauLevenshteinRatio(str1, str2) -> number",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.DamerauLevenshteinRatio(str1, str2) -> number",
+        "type" : "Function",
+        "returns" : [
+          "* (Number) The edit distance between the two strings divided by the length of the first string."
+        ],
+        "name" : "DamerauLevenshteinRatio",
+        "parameters" : [
+          "* str1 (String) - The first string, and the string to use for the ratio.",
+          "* str2 (String) - The second string.",
+          ""
+        ]
+      },
+      {
+        "doc" : "Alias for `hs.fuzzy.DamerauLevenshteinRatio`",
+        "stripped_doc" : [
+          "Alias for `hs.fuzzy.DamerauLevenshteinRatio`"
+        ],
+        "desc" : "Alias for `hs.fuzzy.DamerauLevenshteinRatio`",
+        "def" : "hs.fuzzy.dlr",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.dlr",
+        "type" : "Function",
+        "returns" : [
+
+        ],
+        "name" : "dlr",
+        "parameters" : [
+
+        ]
+      },
+      {
+        "doc" : "Uses the Hamming distance to find the edit distance between two strings.\nThe Hamming distance is the minimum number substitutions that are neeed to turn one string into another. Since only substitutions can be used, Hamming distance can only be calculated between two strings of equal length.\n\nParameters:\n* str1 (String)\n* str2 (String)\n\nReturns:\n* (Number) The edit distance between the two strings.",
+        "stripped_doc" : [
+          "Uses the Hamming distance to find the edit distance between two strings.",
+          "The Hamming distance is the minimum number substitutions that are neeed to turn one string into another. Since only substitutions can be used, Hamming distance can only be calculated between two strings of equal length.",
+          ""
+        ],
+        "desc" : "Uses the Hamming distance to find the edit distance between two strings.",
+        "def" : "hs.fuzzy.HammingDistance(str1, str2) -> number",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.HammingDistance(str1, str2) -> number",
+        "type" : "Function",
+        "returns" : [
+          "* (Number) The edit distance between the two strings."
+        ],
+        "name" : "HammingDistance",
+        "parameters" : [
+          "* str1 (String)",
+          "* str2 (String)",
+          ""
+        ]
+      },
+      {
+        "doc" : "Alias for `hs.fuzzy.HammingDistance`.",
+        "stripped_doc" : [
+          "Alias for `hs.fuzzy.HammingDistance`."
+        ],
+        "desc" : "Alias for `hs.fuzzy.HammingDistance`.",
+        "def" : "hs.fuzzy.hd",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.hd",
+        "type" : "Function",
+        "returns" : [
+
+        ],
+        "name" : "hd",
+        "parameters" : [
+
+        ]
+      },
+      {
+        "doc" : "Finds the edit ratio between two strings using Hamming distance.\n\nParameters:\n* str1 (String) - The first string, and the string to use for the ratio.\n* str2 (String) - The second string.\n\nReturns:\n* (Number) The edit distance between the two strings divided by the length of the first string.",
+        "stripped_doc" : [
+          "Finds the edit ratio between two strings using Hamming distance.",
+          ""
+        ],
+        "desc" : "Finds the edit ratio between two strings using Hamming distance.",
+        "def" : "hs.fuzzy.HammingRatio(str1, str2) -> number",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.HammingRatio(str1, str2) -> number",
+        "type" : "Function",
+        "returns" : [
+          "* (Number) The edit distance between the two strings divided by the length of the first string."
+        ],
+        "name" : "HammingRatio",
+        "parameters" : [
+          "* str1 (String) - The first string, and the string to use for the ratio.",
+          "* str2 (String) - The second string.",
+          ""
+        ]
+      },
+      {
+        "doc" : "Alias for `hs.fuzzy.HammingRatio`",
+        "stripped_doc" : [
+          "Alias for `hs.fuzzy.HammingRatio`"
+        ],
+        "desc" : "Alias for `hs.fuzzy.HammingRatio`",
+        "def" : "hs.fuzzy.hr",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.hr",
+        "type" : "Function",
+        "returns" : [
+
+        ],
+        "name" : "hr",
+        "parameters" : [
+
+        ]
+      },
+      {
+        "doc" : "Given a string `str`, find the best match in a list of strings `listOfStrings`, according to a string metric (ratio) `metric`. The default string metric (ratio) is `DamerauLevenshteinDistance`.\n\nParameters:\n* str (String)\n* listOfStrings (List) - A list of strings.\n* (Optional) metric (String) - The string metric used to compare `str` with each string in `listOfStrings`. Can be any of the distances or ratios (or their aliases) in this module. Default is `DamerauLevenshteinDistance`.\n\nReturns:\n* (String) The string in `listOfStrings` with the smallest edit distance (ratio) `str` according to `metric`.\n* (Number) The distance or ratio between `str` and the best match in `listOfStrings`.",
+        "stripped_doc" : [
+          "Given a string `str`, find the best match in a list of strings `listOfStrings`, according to a string metric (ratio) `metric`. The default string metric (ratio) is `DamerauLevenshteinDistance`.",
+          ""
+        ],
+        "desc" : "Given a string `str`, find the best match in a list of strings `listOfStrings`, according to a string metric (ratio) `metric`. The default string metric (ratio) is `DamerauLevenshteinDistance`.",
+        "def" : "hs.fuzzy.find(str, listOfStrings[, metric]) -> string, number",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.find(str, listOfStrings[, metric]) -> string, number",
+        "type" : "Function",
+        "returns" : [
+          "* (String) The string in `listOfStrings` with the smallest edit distance (ratio) `str` according to `metric`.",
+          "* (Number) The distance or ratio between `str` and the best match in `listOfStrings`."
+        ],
+        "name" : "find",
+        "parameters" : [
+          "* str (String)",
+          "* listOfStrings (List) - A list of strings.",
+          "* (Optional) metric (String) - The string metric used to compare `str` with each string in `listOfStrings`. Can be any of the distances or ratios (or their aliases) in this module. Default is `DamerauLevenshteinDistance`.",
+          ""
+        ]
+      },
+      {
+        "doc" : "Given a string `str`, sorts the list of strings `listOfStrings`, according to a string metric (ratio) `metric`. The default string metric (ratio) is `DamerauLevenshteinDistance`.\n\nParameters:\n* str (String)\n* listOfStrings (List) - A list of strings to sort.\n* (Optional) metric (String) - The string metric (ratio) used to compare `str` with each string in `listOfStrings`. Can be any of the distances or ratios (or their aliases) in this module. Default is `DamerauLevenshteinDistance`.\n\nReturns:\n* (List) An new list containing the strings in `srtList` sorted by the distance or ratio when compared with `str` using `metric`.",
+        "stripped_doc" : [
+          "Given a string `str`, sorts the list of strings `listOfStrings`, according to a string metric (ratio) `metric`. The default string metric (ratio) is `DamerauLevenshteinDistance`.",
+          ""
+        ],
+        "desc" : "Given a string `str`, sorts the list of strings `listOfStrings`, according to a string metric (ratio) `metric`. The default string metric (ratio) is `DamerauLevenshteinDistance`.",
+        "def" : "hs.fuzzy.sort(str, listOfStrings[, metric]) -> list (of strings)",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.sort(str, listOfStrings[, metric]) -> list (of strings)",
+        "type" : "Function",
+        "returns" : [
+          "* (List) An new list containing the strings in `srtList` sorted by the distance or ratio when compared with `str` using `metric`."
+        ],
+        "name" : "sort",
+        "parameters" : [
+          "* str (String)",
+          "* listOfStrings (List) - A list of strings to sort.",
+          "* (Optional) metric (String) - The string metric (ratio) used to compare `str` with each string in `listOfStrings`. Can be any of the distances or ratios (or their aliases) in this module. Default is `DamerauLevenshteinDistance`.",
+          ""
+        ]
+      },
+      {
+        "doc" : "Just like `hs.fuzzy.sort`, given a string `str`, sorts the list of strings `listOfStrings`, according to a string metric (ratio) `metric`. The difference is that `hs.fuzzy.autocomplete` truncates each string in `listOfStrings` to the length of `str` before calculating the distance or ratio. The default string metric (ratio) is `DamerauLevenshteinDistance`.\n\nParameters:\n* str (String)\n* listOfStrings (List) - A list of strings to sort.\n* (Optional) metric (String) - The string metric used to compare `str` with each truncated string in `listOfStrings`.  Can be any of the distances or ratios (or their aliases) in this module. Default is `DamerauLevenshteinDistance`.\n\nReturns:\n* (List) An new list containing the full strings from `srtList` sorted by the distance or ratio of their truncated versions when compared with `str` using `metric`.",
+        "stripped_doc" : [
+          "Just like `hs.fuzzy.sort`, given a string `str`, sorts the list of strings `listOfStrings`, according to a string metric (ratio) `metric`. The difference is that `hs.fuzzy.autocomplete` truncates each string in `listOfStrings` to the length of `str` before calculating the distance or ratio. The default string metric (ratio) is `DamerauLevenshteinDistance`.",
+          ""
+        ],
+        "desc" : "Just like `hs.fuzzy.sort`, given a string `str`, sorts the list of strings `listOfStrings`, according to a string metric (ratio) `metric`. The difference is that `hs.fuzzy.autocomplete` truncates each string in `listOfStrings` to the length of `str` before calculating the distance or ratio. The default string metric (ratio) is `DamerauLevenshteinDistance`.",
+        "def" : "hs.fuzzy.autocomplete(str, listOfStrings[, metric]) -> list (of strings)",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.autocomplete(str, listOfStrings[, metric]) -> list (of strings)",
+        "type" : "Function",
+        "returns" : [
+          "* (List) An new list containing the full strings from `srtList` sorted by the distance or ratio of their truncated versions when compared with `str` using `metric`."
+        ],
+        "name" : "autocomplete",
+        "parameters" : [
+          "* str (String)",
+          "* listOfStrings (List) - A list of strings to sort.",
+          "* (Optional) metric (String) - The string metric used to compare `str` with each truncated string in `listOfStrings`.  Can be any of the distances or ratios (or their aliases) in this module. Default is `DamerauLevenshteinDistance`.",
+          ""
+        ]
+      }
+    ],
+    "Variable" : [
+
+    ],
+    "stripped_doc" : [
+
+    ],
+    "Deprecated" : [
+
+    ],
+    "type" : "Module",
+    "desc" : "Functions for [fuzzy string searching](https:\/\/en.wikipedia.org\/wiki\/Approximate_string_matching), including utility functions for finding the [edit distance](https:\/\/en.wikipedia.org\/wiki\/String_metric)(also known as string metric) between two strings.",
+    "Constructor" : [
+
+    ],
+    "doc" : "Functions for [fuzzy string searching](https:\/\/en.wikipedia.org\/wiki\/Approximate_string_matching), including utility functions for finding the [edit distance](https:\/\/en.wikipedia.org\/wiki\/String_metric)(also known as string metric) between two strings.\n\nThis module is heavily based on Alexander \"Apickx\" Pickering's [Fuzzel](https:\/\/cogarr.net\/source\/cgit.cgi\/fuzzel\/).",
+    "Method" : [
+
+    ],
+    "Field" : [
+
+    ],
+    "Command" : [
+
+    ],
+    "items" : [
+      {
+        "doc" : "Uses the Damerau-Levenshtein distance to find the edit distance between two strings.\nThe Damerau-Levenshtein distance is the minimum number of insertions, substitutions, deletions, or transpositions that are neeed to turn one string into another. This function allows custom costs for additions, substitutions, deletions, and transpositions. (The default costs are 1.)\n\nParameters:\n* str1 (String)\n* str2 (String)\n* (Optional) addCost (Number) - The cost of inserting one character. Default is 1.\n* (Optional) subCost (Number) - The cost of substituting one character for another. Default is 1.\n* (Optional) delCost (Number) - The cost of deleting one character. Default is 1.\n* (Optional) trnCost (Number) - The cost of transposing two adjacent characters. Default is 1.\n\nReturns:\n* (Number) The edit distance between the two strings.",
+        "stripped_doc" : [
+          "Uses the Damerau-Levenshtein distance to find the edit distance between two strings.",
+          "The Damerau-Levenshtein distance is the minimum number of insertions, substitutions, deletions, or transpositions that are neeed to turn one string into another. This function allows custom costs for additions, substitutions, deletions, and transpositions. (The default costs are 1.)",
+          ""
+        ],
+        "desc" : "Uses the Damerau-Levenshtein distance to find the edit distance between two strings.",
+        "def" : "hs.fuzzy.DamerauLevenshteinDistance(str1, str2[, addCost, subCost, delCost, trnCost]) -> number",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.DamerauLevenshteinDistance(str1, str2[, addCost, subCost, delCost, trnCost]) -> number",
+        "type" : "Function",
+        "returns" : [
+          "* (Number) The edit distance between the two strings."
+        ],
+        "name" : "DamerauLevenshteinDistance",
+        "parameters" : [
+          "* str1 (String)",
+          "* str2 (String)",
+          "* (Optional) addCost (Number) - The cost of inserting one character. Default is 1.",
+          "* (Optional) subCost (Number) - The cost of substituting one character for another. Default is 1.",
+          "* (Optional) delCost (Number) - The cost of deleting one character. Default is 1.",
+          "* (Optional) trnCost (Number) - The cost of transposing two adjacent characters. Default is 1.",
+          ""
+        ]
+      },
+      {
+        "doc" : "Finds the edit ratio between two strings using Demerau-Levenshtein distance.\n\nParameters:\n* str1 (String) - The first string, and the string to use for the ratio.\n* str2 (String) - The second string.\n\nReturns:\n* (Number) The edit distance between the two strings divided by the length of the first string.",
+        "stripped_doc" : [
+          "Finds the edit ratio between two strings using Demerau-Levenshtein distance.",
+          ""
+        ],
+        "desc" : "Finds the edit ratio between two strings using Demerau-Levenshtein distance.",
+        "def" : "hs.fuzzy.DamerauLevenshteinRatio(str1, str2) -> number",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.DamerauLevenshteinRatio(str1, str2) -> number",
+        "type" : "Function",
+        "returns" : [
+          "* (Number) The edit distance between the two strings divided by the length of the first string."
+        ],
+        "name" : "DamerauLevenshteinRatio",
+        "parameters" : [
+          "* str1 (String) - The first string, and the string to use for the ratio.",
+          "* str2 (String) - The second string.",
+          ""
+        ]
+      },
+      {
+        "doc" : "Uses the Hamming distance to find the edit distance between two strings.\nThe Hamming distance is the minimum number substitutions that are neeed to turn one string into another. Since only substitutions can be used, Hamming distance can only be calculated between two strings of equal length.\n\nParameters:\n* str1 (String)\n* str2 (String)\n\nReturns:\n* (Number) The edit distance between the two strings.",
+        "stripped_doc" : [
+          "Uses the Hamming distance to find the edit distance between two strings.",
+          "The Hamming distance is the minimum number substitutions that are neeed to turn one string into another. Since only substitutions can be used, Hamming distance can only be calculated between two strings of equal length.",
+          ""
+        ],
+        "desc" : "Uses the Hamming distance to find the edit distance between two strings.",
+        "def" : "hs.fuzzy.HammingDistance(str1, str2) -> number",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.HammingDistance(str1, str2) -> number",
+        "type" : "Function",
+        "returns" : [
+          "* (Number) The edit distance between the two strings."
+        ],
+        "name" : "HammingDistance",
+        "parameters" : [
+          "* str1 (String)",
+          "* str2 (String)",
+          ""
+        ]
+      },
+      {
+        "doc" : "Finds the edit ratio between two strings using Hamming distance.\n\nParameters:\n* str1 (String) - The first string, and the string to use for the ratio.\n* str2 (String) - The second string.\n\nReturns:\n* (Number) The edit distance between the two strings divided by the length of the first string.",
+        "stripped_doc" : [
+          "Finds the edit ratio between two strings using Hamming distance.",
+          ""
+        ],
+        "desc" : "Finds the edit ratio between two strings using Hamming distance.",
+        "def" : "hs.fuzzy.HammingRatio(str1, str2) -> number",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.HammingRatio(str1, str2) -> number",
+        "type" : "Function",
+        "returns" : [
+          "* (Number) The edit distance between the two strings divided by the length of the first string."
+        ],
+        "name" : "HammingRatio",
+        "parameters" : [
+          "* str1 (String) - The first string, and the string to use for the ratio.",
+          "* str2 (String) - The second string.",
+          ""
+        ]
+      },
+      {
+        "doc" : "Uses Levenshtein distance to find the edit distance between two strings.\nThe Levenshtein distance is the minimum number of insertions, deletions, and substitutions that are needed to turn one string into another. This function allows custom costs for insertions, substitutions, and deletions. (The default costs are 1.)\n\nParameters:\n* str1 (String)\n* str2 (String)\n* (Optional) addCost (Number) - The cost of inserting one character. Default is 1.\n* (Optional) subCost (Number) - The cost of substituting one character for another. Default is 1.\n* (Optional) delCost (Number) - The cost of deleting one character. Default is 1.\n\nReturns:\n* (Number) The edit distance between the two strings.",
+        "stripped_doc" : [
+          "Uses Levenshtein distance to find the edit distance between two strings.",
+          "The Levenshtein distance is the minimum number of insertions, deletions, and substitutions that are needed to turn one string into another. This function allows custom costs for insertions, substitutions, and deletions. (The default costs are 1.)",
+          ""
+        ],
+        "desc" : "Uses Levenshtein distance to find the edit distance between two strings.",
+        "def" : "hs.fuzzy.LevenshteinDistance(str1, str2[, addCost, subCost, delCost]) -> number",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.LevenshteinDistance(str1, str2[, addCost, subCost, delCost]) -> number",
+        "type" : "Function",
+        "returns" : [
+          "* (Number) The edit distance between the two strings."
+        ],
+        "name" : "LevenshteinDistance",
+        "parameters" : [
+          "* str1 (String)",
+          "* str2 (String)",
+          "* (Optional) addCost (Number) - The cost of inserting one character. Default is 1.",
+          "* (Optional) subCost (Number) - The cost of substituting one character for another. Default is 1.",
+          "* (Optional) delCost (Number) - The cost of deleting one character. Default is 1.",
+          ""
+        ]
+      },
+      {
+        "doc" : "Finds the edit ratio between two strings using Levenshtein distance.\n\nParameters:\n* str1 (String) - The first string, and the string to use for the ratio.\n* str2 (String) - The second string.\n\nReturns:\n* (Number) The edit distance between the two strings divided by the length of the first string.",
+        "stripped_doc" : [
+          "Finds the edit ratio between two strings using Levenshtein distance.",
+          ""
+        ],
+        "desc" : "Finds the edit ratio between two strings using Levenshtein distance.",
+        "def" : "hs.fuzzy.LevenshteinRatio(str1, str2) -> number",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.LevenshteinRatio(str1, str2) -> number",
+        "type" : "Function",
+        "returns" : [
+          "* (Number) The edit distance between the two strings divided by the length of the first string."
+        ],
+        "name" : "LevenshteinRatio",
+        "parameters" : [
+          "* str1 (String) - The first string, and the string to use for the ratio.",
+          "* str2 (String) - The second string.",
+          ""
+        ]
+      },
+      {
+        "doc" : "Just like `hs.fuzzy.sort`, given a string `str`, sorts the list of strings `listOfStrings`, according to a string metric (ratio) `metric`. The difference is that `hs.fuzzy.autocomplete` truncates each string in `listOfStrings` to the length of `str` before calculating the distance or ratio. The default string metric (ratio) is `DamerauLevenshteinDistance`.\n\nParameters:\n* str (String)\n* listOfStrings (List) - A list of strings to sort.\n* (Optional) metric (String) - The string metric used to compare `str` with each truncated string in `listOfStrings`.  Can be any of the distances or ratios (or their aliases) in this module. Default is `DamerauLevenshteinDistance`.\n\nReturns:\n* (List) An new list containing the full strings from `srtList` sorted by the distance or ratio of their truncated versions when compared with `str` using `metric`.",
+        "stripped_doc" : [
+          "Just like `hs.fuzzy.sort`, given a string `str`, sorts the list of strings `listOfStrings`, according to a string metric (ratio) `metric`. The difference is that `hs.fuzzy.autocomplete` truncates each string in `listOfStrings` to the length of `str` before calculating the distance or ratio. The default string metric (ratio) is `DamerauLevenshteinDistance`.",
+          ""
+        ],
+        "desc" : "Just like `hs.fuzzy.sort`, given a string `str`, sorts the list of strings `listOfStrings`, according to a string metric (ratio) `metric`. The difference is that `hs.fuzzy.autocomplete` truncates each string in `listOfStrings` to the length of `str` before calculating the distance or ratio. The default string metric (ratio) is `DamerauLevenshteinDistance`.",
+        "def" : "hs.fuzzy.autocomplete(str, listOfStrings[, metric]) -> list (of strings)",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.autocomplete(str, listOfStrings[, metric]) -> list (of strings)",
+        "type" : "Function",
+        "returns" : [
+          "* (List) An new list containing the full strings from `srtList` sorted by the distance or ratio of their truncated versions when compared with `str` using `metric`."
+        ],
+        "name" : "autocomplete",
+        "parameters" : [
+          "* str (String)",
+          "* listOfStrings (List) - A list of strings to sort.",
+          "* (Optional) metric (String) - The string metric used to compare `str` with each truncated string in `listOfStrings`.  Can be any of the distances or ratios (or their aliases) in this module. Default is `DamerauLevenshteinDistance`.",
+          ""
+        ]
+      },
+      {
+        "doc" : "Alias for `hs.fuzzy.DamerauLevenshteinDistance`.",
+        "stripped_doc" : [
+          "Alias for `hs.fuzzy.DamerauLevenshteinDistance`."
+        ],
+        "desc" : "Alias for `hs.fuzzy.DamerauLevenshteinDistance`.",
+        "def" : "hs.fuzzy.dld",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.dld",
+        "type" : "Function",
+        "returns" : [
+
+        ],
+        "name" : "dld",
+        "parameters" : [
+
+        ]
+      },
+      {
+        "doc" : "Alias for `hs.fuzzy.DamerauLevenshteinRatio`",
+        "stripped_doc" : [
+          "Alias for `hs.fuzzy.DamerauLevenshteinRatio`"
+        ],
+        "desc" : "Alias for `hs.fuzzy.DamerauLevenshteinRatio`",
+        "def" : "hs.fuzzy.dlr",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.dlr",
+        "type" : "Function",
+        "returns" : [
+
+        ],
+        "name" : "dlr",
+        "parameters" : [
+
+        ]
+      },
+      {
+        "doc" : "Given a string `str`, find the best match in a list of strings `listOfStrings`, according to a string metric (ratio) `metric`. The default string metric (ratio) is `DamerauLevenshteinDistance`.\n\nParameters:\n* str (String)\n* listOfStrings (List) - A list of strings.\n* (Optional) metric (String) - The string metric used to compare `str` with each string in `listOfStrings`. Can be any of the distances or ratios (or their aliases) in this module. Default is `DamerauLevenshteinDistance`.\n\nReturns:\n* (String) The string in `listOfStrings` with the smallest edit distance (ratio) `str` according to `metric`.\n* (Number) The distance or ratio between `str` and the best match in `listOfStrings`.",
+        "stripped_doc" : [
+          "Given a string `str`, find the best match in a list of strings `listOfStrings`, according to a string metric (ratio) `metric`. The default string metric (ratio) is `DamerauLevenshteinDistance`.",
+          ""
+        ],
+        "desc" : "Given a string `str`, find the best match in a list of strings `listOfStrings`, according to a string metric (ratio) `metric`. The default string metric (ratio) is `DamerauLevenshteinDistance`.",
+        "def" : "hs.fuzzy.find(str, listOfStrings[, metric]) -> string, number",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.find(str, listOfStrings[, metric]) -> string, number",
+        "type" : "Function",
+        "returns" : [
+          "* (String) The string in `listOfStrings` with the smallest edit distance (ratio) `str` according to `metric`.",
+          "* (Number) The distance or ratio between `str` and the best match in `listOfStrings`."
+        ],
+        "name" : "find",
+        "parameters" : [
+          "* str (String)",
+          "* listOfStrings (List) - A list of strings.",
+          "* (Optional) metric (String) - The string metric used to compare `str` with each string in `listOfStrings`. Can be any of the distances or ratios (or their aliases) in this module. Default is `DamerauLevenshteinDistance`.",
+          ""
+        ]
+      },
+      {
+        "doc" : "Alias for `hs.fuzzy.HammingDistance`.",
+        "stripped_doc" : [
+          "Alias for `hs.fuzzy.HammingDistance`."
+        ],
+        "desc" : "Alias for `hs.fuzzy.HammingDistance`.",
+        "def" : "hs.fuzzy.hd",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.hd",
+        "type" : "Function",
+        "returns" : [
+
+        ],
+        "name" : "hd",
+        "parameters" : [
+
+        ]
+      },
+      {
+        "doc" : "Alias for `hs.fuzzy.HammingRatio`",
+        "stripped_doc" : [
+          "Alias for `hs.fuzzy.HammingRatio`"
+        ],
+        "desc" : "Alias for `hs.fuzzy.HammingRatio`",
+        "def" : "hs.fuzzy.hr",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.hr",
+        "type" : "Function",
+        "returns" : [
+
+        ],
+        "name" : "hr",
+        "parameters" : [
+
+        ]
+      },
+      {
+        "doc" : "Alias for `hs.fuzzy.LevenshteinDistance`.",
+        "stripped_doc" : [
+          "Alias for `hs.fuzzy.LevenshteinDistance`."
+        ],
+        "desc" : "Alias for `hs.fuzzy.LevenshteinDistance`.",
+        "def" : "hs.fuzzy.ld",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.ld",
+        "type" : "Function",
+        "returns" : [
+
+        ],
+        "name" : "ld",
+        "parameters" : [
+
+        ]
+      },
+      {
+        "doc" : "Alias for `hs.fuzzy.LevenshteinRatio`.",
+        "stripped_doc" : [
+          "Alias for `hs.fuzzy.LevenshteinRatio`."
+        ],
+        "desc" : "Alias for `hs.fuzzy.LevenshteinRatio`.",
+        "def" : "hs.fuzzy.lr",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.lr",
+        "type" : "Function",
+        "returns" : [
+
+        ],
+        "name" : "lr",
+        "parameters" : [
+
+        ]
+      },
+      {
+        "doc" : "Given a string `str`, sorts the list of strings `listOfStrings`, according to a string metric (ratio) `metric`. The default string metric (ratio) is `DamerauLevenshteinDistance`.\n\nParameters:\n* str (String)\n* listOfStrings (List) - A list of strings to sort.\n* (Optional) metric (String) - The string metric (ratio) used to compare `str` with each string in `listOfStrings`. Can be any of the distances or ratios (or their aliases) in this module. Default is `DamerauLevenshteinDistance`.\n\nReturns:\n* (List) An new list containing the strings in `srtList` sorted by the distance or ratio when compared with `str` using `metric`.",
+        "stripped_doc" : [
+          "Given a string `str`, sorts the list of strings `listOfStrings`, according to a string metric (ratio) `metric`. The default string metric (ratio) is `DamerauLevenshteinDistance`.",
+          ""
+        ],
+        "desc" : "Given a string `str`, sorts the list of strings `listOfStrings`, according to a string metric (ratio) `metric`. The default string metric (ratio) is `DamerauLevenshteinDistance`.",
+        "def" : "hs.fuzzy.sort(str, listOfStrings[, metric]) -> list (of strings)",
+        "notes" : [
+
+        ],
+        "signature" : "hs.fuzzy.sort(str, listOfStrings[, metric]) -> list (of strings)",
+        "type" : "Function",
+        "returns" : [
+          "* (List) An new list containing the strings in `srtList` sorted by the distance or ratio when compared with `str` using `metric`."
+        ],
+        "name" : "sort",
+        "parameters" : [
+          "* str (String)",
+          "* listOfStrings (List) - A list of strings to sort.",
+          "* (Optional) metric (String) - The string metric (ratio) used to compare `str` with each string in `listOfStrings`. Can be any of the distances or ratios (or their aliases) in this module. Default is `DamerauLevenshteinDistance`.",
+          ""
+        ]
+      }
+    ],
+    "name" : "hs.fuzzy"
   }
 ]

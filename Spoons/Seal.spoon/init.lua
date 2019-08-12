@@ -14,6 +14,8 @@
 ---  * useractions : User defined custom actions
 ---  * vpn : Connect and disconnect VPNs (currently supports Viscosity and macOS system preferences)A
 
+local fuzzy = require "fuzzy_match"
+
 local obj = {}
 obj.__index = obj
 
@@ -51,7 +53,7 @@ obj.plugin_search_paths = { hs.configdir .. "/seal_plugins", obj.spoonPath }
 --- Notes:
 ---  * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands.
 function obj:refreshCommandsForPlugin(plugin_name)
-   plugin = self.plugins[plugin_name]
+   local plugin = self.plugins[plugin_name]
    if plugin.commands then
       for cmd,cmdInfo in pairs(plugin:commands()) do
          if not self.commands[cmd] then
@@ -98,7 +100,8 @@ end
 ---    from non-standard locations and is mostly a development interface.
 ---  * Some plugins may immediately begin doing background work (e.g. Spotlight searches)
 function obj:loadPluginFromFile(plugin_name, file)
-   local f,err = loadfile(file)
+   local f, err = loadfile(file)
+   print(err)
    if f~= nil then
       local plugin = f()
       plugin.seal = self
@@ -129,7 +132,7 @@ function obj:loadPlugins(plugins)
     self.chooser:choices(self.choicesCallback)
     self.chooser:queryChangedCallback(self.queryChangedCallback)
 
-    for k,plugin_name in pairs(plugins) do
+    for _,plugin_name in pairs(plugins) do
        local loaded=nil
        print("-- Loading Seal plugin: " .. plugin_name)
        for _,dir in ipairs(self.plugin_search_paths) do
@@ -236,7 +239,7 @@ end
 ---  * This may be useful if you wish to show Seal in response to something other than its hotkey
 function obj:show(query)
     self.chooser:show()
-    self.chooser:query(query)
+    if query then self.chooser:query(query) end
     return self
 end
 
@@ -254,7 +257,6 @@ function obj:toggle(query)
         self.chooser:hide()
     else
         self:show(query)
-
     end
     return self
 end
@@ -267,7 +269,7 @@ function obj.completionCallback(rowInfo)
         obj.chooser:query(rowInfo["cmd"])
         return
     end
-    for k,plugin in pairs(obj.plugins) do
+    for _,plugin in pairs(obj.plugins) do
         if plugin.__name == rowInfo["plugin"] then
             plugin.completionCallback(rowInfo)
             break
@@ -276,62 +278,50 @@ function obj.completionCallback(rowInfo)
 end
 
 function obj.choicesCallback()
-    -- TODO: Sort each of these clusters of choices, alphabetically
-    choices = {}
-    query = obj.chooser:query()
-    cmd = nil
-    query_words = {}
-    if query == "" then
-        return choices
-    end
-    for word in string.gmatch(query, "%S+") do
-        if cmd == nil then
-            cmd = word
-        else
-            table.insert(query_words, word)
-        end
-    end
-    query_words = table.concat(query_words, " ")
+    local query = obj.chooser:query()
+    if query == "" then return {} end
+
+    local choiceGroups = {}
+    local cmd, subQuery = string.match(query, "(%S+) ?(.*)")
+
     -- First get any direct command matches
+    local directChoices = {}
     for command,cmdInfo in pairs(obj.commands) do
-        cmd_fn = cmdInfo["fn"]
+        local cmd_fn = cmdInfo["fn"]
         if cmd:lower() == command:lower() then
-            if (query_words or "") == "" then
-                query_words = ".*"
-            end
-            fn_choices = cmd_fn(query_words)
+            local fn_choices = cmd_fn(subQuery)
             if fn_choices ~= nil then
-                for j,choice in pairs(fn_choices) do
-                    table.insert(choices, choice)
+                for _,choice in pairs(fn_choices) do
+                    table.insert(directChoices, choice)
                 end
             end
         end
     end
+    table.insert(choiceGroups, fuzzy.fuzzySort(directChoices, "text", subQuery))
+
     -- Now get any bare matches
-    for k,plugin in pairs(obj.plugins) do
-        bare = plugin:bare()
-        if bare then
-            for i,choice in pairs(bare(query)) do
-                table.insert(choices, choice)
-            end
-        end
-    end
+    local barePlugins = hs.fnutils.filter(obj.plugins, function(plugin) return plugin:bare() end)
+    local bareChoices = hs.fnutils.mapCat(barePlugins, function(plugin) return plugin:bare()(query) end)
+    table.insert(choiceGroups, fuzzy.fuzzySort(bareChoices, "text", query))
+
     -- Now add in any matching commands
     -- TODO: This only makes sense to do if we can select the choice without dismissing the chooser, which requires changes to HSChooser
+    local commandChoices = {}
     for command,cmdInfo in pairs(obj.commands) do
-        if string.match(command, query) and #query_words == 0 then
-            choice = {}
+        if string.match(command, query) and subQuery == "" then
+            local choice = {}
             choice["text"] = cmdInfo["name"]
             choice["subText"] = cmdInfo["description"]
             choice["type"] = "plugin_cmd"
-            table.insert(choices,choice)
+            table.insert(commandChoices,choice)
         end
     end
+    table.insert(commandChoices, fuzzy.fuzzySort(bareChoices, "text", query))
 
-    return choices
+    return hs.fnutils.reduce(choiceGroups, hs.fnutils.concat)
 end
 
-function obj.queryChangedCallback(query)
+function obj.queryChangedCallback()
     if obj.queryChangedTimer then
         obj.queryChangedTimer:stop()
     end

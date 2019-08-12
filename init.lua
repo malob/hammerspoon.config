@@ -8,7 +8,7 @@
 consts = require "configConsts"
 
 -- Reload Hammerspoon on changes in config dir
-reloadConfWatcher = hs.pathwatcher.new(hs.configdir, hs.reload):start() -- luacheck: ignore
+-- reloadConfWatcher = hs.pathwatcher.new(hs.configdir, hs.reload):start() -- luacheck: ignore
 
 -- Other misc initialization/config
 hyper = { "ctrl", "alt", "cmd" } -- Modifier combo for later use
@@ -103,7 +103,11 @@ spoon.SpoonInstall:andUse(
   "Seal",
   {
     fn = function(x)
-      x:loadPlugins({"apps", "calc", "useractions", "rot13"})
+      x:loadPlugins({"apps", "calc", "useractions", "rot13", "safari_tabs", "onetimesecret"})
+      x.plugins.onetimesecret.apiCredentials = {
+        user = consts.onetimesecretUser,
+        key  = consts.onetimesecretKey,
+      }
       x.plugins.useractions.actions = {
 
         -- Asana
