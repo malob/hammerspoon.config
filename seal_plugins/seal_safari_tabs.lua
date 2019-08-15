@@ -1,4 +1,3 @@
---TODO: Remove duplicates (almost always pinned tabs)
 local obj   = {}
 obj.__index = obj
 obj.__name  = "seal_safari_tabs"
@@ -65,13 +64,19 @@ function obj.choicesTabs(query)
   if not query or query == "" then
     choicesCache = {}
     hs.fnutils.each(getTabs(), function(x)
-      table.insert(choicesCache, {
-        text     = x.name,
-        subText  = x.url,
-        windowId = x.windowId,
-        tabIndex = x.index,
-        plugin   = obj.__name,
-      })
+      if not hs.fnutils.some(
+        choicesCache,
+        function(y) return y.text == x.name and y.subText == x.url end
+      )
+      then
+        choicesCache[#choicesCache+1] = {
+          text     = x.name,
+          subText  = x.url,
+          windowId = x.windowId,
+          tabIndex = x.index,
+          plugin   = obj.__name,
+        }
+      end
     end)
   end
 
