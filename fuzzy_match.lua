@@ -53,7 +53,7 @@ M.PENALTY_NOT_COMPLETE = 0.99
 
 --- fuzzyMatch.allCaseInsensitiveSplits(str, chr) -> list
 --- Function
---- Generates all possible split objects by splitting a string around a 
+--- Generates all possible split objects by splitting a string around a
 --- character in as many ways as possible.
 ---
 --- Parameters:
@@ -121,6 +121,7 @@ end
 ---     * html: A copy of the input string html-escaped, with matching letters
 ---       surrounded by <b> and </b>.
 function M.fuzzyMatch(str, abbreviation)
+  if type(str) ~= "string" then str = tostring(str) end
   if (abbreviation == "") then
     local r = {
       score = str == "" and M.SCORE_CONTINUE_MATCH or M.PENALTY_NOT_COMPLETE,
@@ -195,7 +196,7 @@ end
 --- fuzzyMatch.fuzzySort(list, key, abbreviation) -> list
 --- Function
 --- Returns list sorted by key's fuzzyMatch score for abbreviation.
---- 
+---
 --- Parameters:
 ---   * list: a list of records
 ---   * key: the key field to sort the list by

@@ -49,10 +49,10 @@ function obj.changeTtl(query)
   end
 
   if query == "" then
-    choice.text    = tostring(obj.secretTtl)
+    choice.text    = obj.secretTtl
     choice.subText = "Current TTL is "
   else
-    choice.text    = tostring(tonumber(query))
+    choice.text    = tonumber(query)
     choice.subText = "Change TTL to "
     choice.type    = "changeSecretTtl"
   end
